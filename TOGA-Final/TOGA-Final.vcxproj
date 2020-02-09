@@ -20,7 +20,7 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
-    <ProjectGuid>{4B90F3A2-DF35-4B55-AADC-B67774B52ED8}</ProjectGuid>
+    <ProjectGuid>{DB2E7BF7-2FE9-421A-A4E5-7BCEDBB711AE}</ProjectGuid>
     <RootNamespace>TOGAFinal</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
@@ -71,8 +71,6 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>C:\Users\Kian\Documents\Visual Studio 2019\Projects\TOGA-Final\lib\glm;C:\Users\Kian\Documents\Visual Studio 2019\Projects\TOGA-Final\lib\glfw-3.3\include;C:\Users\Kian\Documents\Visual Studio 2019\Projects\TOGA-Final\lib\glad\include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Users\Kian\Documents\Visual Studio 2019\Projects\TOGA-Final\lib\glfw-3.3\lib-vc2019;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
@@ -93,7 +91,6 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>opengl32.lib;glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -141,29 +138,17 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\lib\glad\src\glad.c" />
-    <ClCompile Include="Entity.cpp" />
-    <ClCompile Include="EntityPlayer.cpp" />
-    <ClCompile Include="Game.cpp" />
-    <ClCompile Include="Main.cpp" />
-    <ClCompile Include="PlayerInput.cpp" />
-    <ClCompile Include="Renderer.cpp" />
-    <ClCompile Include="ResourceManager.cpp" />
+    <ClCompile Include="entity_manager.cpp" />
+    <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Camera.h" />
-    <ClInclude Include="Entity.h" />
-    <ClInclude Include="EntityPlayer.h" />
-    <ClInclude Include="Game.h" />
-    <ClInclude Include="PlayerInput.h" />
-    <ClInclude Include="Renderer.h" />
-    <ClInclude Include="ResourceManager.h" />
-    <ClInclude Include="Shader.h" />
-    <ClInclude Include="Transform.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="shaders\fragmentShader.glsl" />
-    <None Include="shaders\vertexShader.glsl" />
+    <ClInclude Include="component.h" />
+    <ClInclude Include="component_manager.h" />
+    <ClInclude Include="system.h" />
+    <ClInclude Include="transform_component.h" />
+    <ClInclude Include="entity.h" />
+    <ClInclude Include="entity_manager.h" />
+    <ClInclude Include="world.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

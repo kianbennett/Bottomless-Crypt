@@ -13,77 +13,42 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Source Files\shaders">
-      <UniqueIdentifier>{48954239-2ff2-4ee3-bec2-12c5cdbf06ee}</UniqueIdentifier>
+    <Filter Include="Header Files\components">
+      <UniqueIdentifier>{0c235167-382c-4061-91bb-ee91cc126f1c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Entities">
-      <UniqueIdentifier>{8f1e9be5-0d65-4797-a76a-c0ba0324203a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Entities">
-      <UniqueIdentifier>{d6c2be38-891a-4be5-801e-7c6621e16a20}</UniqueIdentifier>
+    <Filter Include="Header Files\systems">
+      <UniqueIdentifier>{ba8e52cc-59e7-4598-b503-50563b8e5180}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Main.cpp">
+    <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\lib\glad\src\glad.c">
+    <ClCompile Include="entity_manager.cpp">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Game.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Renderer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ResourceManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Entity.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="PlayerInput.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="EntityPlayer.cpp">
-      <Filter>Source Files\Entities</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Camera.h">
+    <ClInclude Include="entity_manager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Game.h">
+    <ClInclude Include="entity.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ResourceManager.h">
+    <ClInclude Include="component.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Shader.h">
+    <ClInclude Include="transform_component.h">
+      <Filter>Header Files\components</Filter>
+    </ClInclude>
+    <ClInclude Include="component_manager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Renderer.h">
+    <ClInclude Include="system.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Entity.h">
+    <ClInclude Include="world.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Transform.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="PlayerInput.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="EntityPlayer.h">
-      <Filter>Header Files\Entities</Filter>
-    </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="shaders\fragmentShader.glsl">
-      <Filter>Source Files\shaders</Filter>
-    </None>
-    <None Include="shaders\vertexShader.glsl">
-      <Filter>Source Files\shaders</Filter>
-    </None>
   </ItemGroup>
 </Project>
