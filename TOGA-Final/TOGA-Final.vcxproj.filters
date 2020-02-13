@@ -65,5 +65,11 @@
     <ClInclude Include="texture.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="c_ui_text.h">
+      <Filter>Header Files\components</Filter>
+    </ClInclude>
+    <ClInclude Include="s_render_text.h">
+      <Filter>Header Files\systems</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

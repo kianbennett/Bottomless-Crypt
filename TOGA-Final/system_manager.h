@@ -11,7 +11,7 @@ class SystemManager {
 public:
 	// Registers a system in the map
 	template<typename System>
-	std::shared_ptr<System> registerSystem() {
+	std::shared_ptr<System> registerSystem(Signature signature) {
 		const char* typeName = typeid(System).name();
 
 		if (hasSystemBeenRegistered(typeName)) {
@@ -20,21 +20,22 @@ public:
 		}
 
 		std::shared_ptr<System> system = std::make_shared<System>();
+		system->signature = signature;
 		systems[typeName] = system;
 		return system;
 	}
 
 	// Sets the signature for a system in the map
-	template<typename System>
-	void setSignature(Signature signature) {
-		const char* typeName = typeid(System).name();
+	//template<typename System>
+	//void setSignature(Signature signature) {
+	//	const char* typeName = typeid(System).name();
 
-		if (!hasSystemBeenRegistered(typeName)) {
-			printf("System needs to be registered before use\n");
-		}
+	//	if (!hasSystemBeenRegistered(typeName)) {
+	//		printf("System needs to be registered before use\n");
+	//	}
 
-		signatures[typeName] = signature;
-	}
+	//	signatures[typeName] = signature;
+	//}
 
 	// Called when an entity is destroyed, goes through each system and removes that entity
 	void onEntityDestroyed(Entity entity) {
@@ -51,11 +52,10 @@ public:
 		for (auto pair : systems) {
 			const char* typeName = pair.first;
 			std::shared_ptr<System> system = pair.second;
-			Signature systemSignature = signatures[typeName];
 
 			// Before AND operator in bitsets, if they are equal the result will be the same as the original
 			// If the signatures match add the entity to the system, otherwise remove the entity
-			if ((entity.signature & systemSignature) == systemSignature) {
+			if ((entity.signature & system->signature) == system->signature) {
 				// Again no check is needed as entities is a set
 				system->entities.insert(entity);
 			}
@@ -70,7 +70,7 @@ private:
 	std::unordered_map<const char*, std::shared_ptr<System>> systems;
 	// Store which components are needed for each system in a bitset
 	// If bit at index of component id is 1 then the system requires that component
-	std::unordered_map<const char*, Signature> signatures;
+	//std::unordered_map<const char*, Signature> signatures;
 
 	bool hasSystemBeenRegistered(const char* typeName) {
 		return systems.find(typeName) != systems.end();

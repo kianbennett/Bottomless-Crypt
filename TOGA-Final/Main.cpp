@@ -7,7 +7,9 @@
 #include "ecs.h"
 #include "texture.h"
 #include "c_transform.h"
+#include "c_ui_text.h"
 #include "s_render.h"
+#include "s_render_text.h"
 
 using namespace std;
 
@@ -28,30 +30,39 @@ TTF_Font* font;
 Texture* fontTexture;
 
 Uint32 deltaTime, lastTime;
+Uint32 fpsCheckTime, framesCounted;
 
 int main(int argc, char* args[]) {
 	initSDL();
 	loadResources();
 
 	ECS::registerComponent<TransformComponent>();
+	ECS::registerComponent<UITextComponent>();
 
-	std::shared_ptr<RenderSystem> renderSystem = ECS::registerSystem<RenderSystem>();
-	{
-		Signature signature;
-		signature.set(ECS::getComponentId<TransformComponent>());
-		ECS::setSystemSignature<RenderSystem>(signature);
-	}
-	renderSystem->init();
+	Signature renderSignature;
+	renderSignature.set(ECS::getComponentId<TransformComponent>());
+	std::shared_ptr<RenderSystem> renderSystem = ECS::registerSystem<RenderSystem>(renderSignature);
+
+	Signature renderTextSignature;
+	renderTextSignature.set(ECS::getComponentId<TransformComponent>());
+	renderTextSignature.set(ECS::getComponentId<UITextComponent>());
+	std::shared_ptr<RenderTextSystem> renderTextSystem = ECS::registerSystem<RenderTextSystem>(renderTextSignature);
+	renderTextSystem->setRenderer(renderer);
 
 	Entity player = ECS::createEntity();
-	ECS::addComponent(player, TransformComponent {
-		0.0f, 0.0f, 0.0f, 1.0f, 1.0f
-	});
+	ECS::addComponent(player, TransformComponent());
+
+	Entity timeText = ECS::createEntity();
+	ECS::addComponent(timeText, TransformComponent(5, 5));
+	ECS::addComponent(timeText, UITextComponent("asd", { 0xFF, 0xFF, 0xFF }, font));
+
+	renderSystem->init();
+	renderTextSystem->init();
 
 	bool quit = false;
 	SDL_Event e;
 	// Read and write to a string in memory
-	std::stringstream timeText;
+	std::stringstream timeTextStream;
 
 	while (!quit) {
 		// Iterate over all events that have been captured since last frame
@@ -73,21 +84,33 @@ int main(int argc, char* args[]) {
 		deltaTime = time - lastTime;
 		lastTime = time;
 
-		renderSystem->update(deltaTime);
+		// Update FPS check
+		fpsCheckTime += deltaTime;
+		framesCounted++;
+		int fpsCheckInterval = 50;
+		if (fpsCheckTime > fpsCheckInterval) {
+			int fps = (int) (framesCounted / (fpsCheckTime / 1000.0f));
+			timeTextStream.str("");
+			timeTextStream << "fps: " << fps;
+			ECS::getComponent<UITextComponent>(timeText).text = timeTextStream.str();
+			ECS::getComponent<UITextComponent>(timeText).textChanged = true;
+			fpsCheckTime = 0;
+			framesCounted = 0;
+		}
 
 		// Clear screen to background colour
 		SDL_RenderClear(renderer);
 
 		// Render code
-		timeText.str("");
-		timeText << "elapsed time: " << time;
-		fontTexture->loadFromText(renderer, timeText.str(), font, { 0xFF, 0xFF, 0xFF });
-		fontTexture->render(renderer, 5, 5);
+		renderSystem->update(deltaTime);
+		renderTextSystem->update(deltaTime);
 
 		// Update screen
 		SDL_RenderPresent(renderer);
-		SDL_Delay(30);
 	}
+
+	renderSystem->dealloc();
+	renderTextSystem->dealloc();
 
 	ECS::destroyEntity(player);
 
@@ -126,7 +149,7 @@ void initSDL() {
 	}
 
 	// Create window renderer
-	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED/* | SDL_RENDERER_PRESENTVSYNC*/);
 
 	if (renderer == NULL) {
 		printf("Could not create window renderer - Error: %s\n", SDL_GetError());
@@ -147,7 +170,7 @@ void initSDL() {
 
 void loadResources() {
 	const char* fontPath = "res/fonts/consolas.ttf";
-	font = TTF_OpenFont(fontPath, 16);
+	font = TTF_OpenFont(fontPath, 20);
 
 	if (font == NULL) {
 		printf("Failed to load font from %s - Error: %s\n", fontPath, SDL_GetError());

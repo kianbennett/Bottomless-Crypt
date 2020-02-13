@@ -57,7 +57,6 @@ public:
 		// Check the component exists in the array
 		if (entityToIndexMap.find(entity) == entityToIndexMap.end()) {
 			printf("Cannot get component as it doesn't exist!\n");
-			return;
 		}
 
 		// Get component in array at the entity's index

@@ -148,6 +148,7 @@
   <ItemGroup>
     <ClInclude Include="component_array.h" />
     <ClInclude Include="component_manager.h" />
+    <ClInclude Include="c_ui_text.h" />
     <ClInclude Include="ecs.h" />
     <ClInclude Include="system.h" />
     <ClInclude Include="c_transform.h" />
@@ -155,6 +156,7 @@
     <ClInclude Include="entity_manager.h" />
     <ClInclude Include="system_manager.h" />
     <ClInclude Include="s_render.h" />
+    <ClInclude Include="s_render_text.h" />
     <ClInclude Include="texture.h" />
     <ClInclude Include="types.h" />
   </ItemGroup>

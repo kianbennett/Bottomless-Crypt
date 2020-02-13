@@ -40,15 +40,16 @@ bool Texture::loadFromText(SDL_Renderer* renderer, std::string text, TTF_Font* f
 	// Delete existing texture
 	dealloc();
 
-	SDL_Surface* surface = TTF_RenderText_Solid(font, text.c_str(), colour);
+	SDL_Surface* surface = TTF_RenderText_Blended(font, text.c_str(), colour);
 
 	if (surface != NULL) {
 		//Create texture from surface pixels
 		texture = SDL_CreateTextureFromSurface(renderer, surface);
 		if (texture != NULL) {
 			// Get image dimensions
-			width = surface->w;
-			height = surface->h;
+			//width = surface->w;
+			//height = surface->h;
+			SDL_QueryTexture(texture, NULL, NULL, &width, &height);
 		}
 		else {
 			printf("Unable to create texture from rendered text! SDL Error: %s\n", SDL_GetError());

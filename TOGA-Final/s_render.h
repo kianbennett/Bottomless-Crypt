@@ -4,6 +4,12 @@
 
 class RenderSystem : public System {
 public:
-	void init() {}
-	void update(float dt) {}
+	void init() override {
+	}
+
+	void update(float dt) override {
+	}
+
+	void dealloc() override {
+	}
 };

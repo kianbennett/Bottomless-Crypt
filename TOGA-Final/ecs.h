@@ -24,7 +24,7 @@ public:
 
 	// Maybe move these into ComponentManager
 	template<typename Component>
-	static void addComponent(Entity entity, Component component) {
+	static void addComponent(Entity& entity, Component component) {
 		// Adds the component to the vector of components
 		componentManager->addComponent<Component>(entity, component);
 		// Sets the bit at the index of the component's unique id to true
@@ -51,14 +51,14 @@ public:
 	}
 
 	template<typename System>
-	static std::shared_ptr<System> registerSystem() {
-		return systemManager->registerSystem<System>();
+	static std::shared_ptr<System> registerSystem(Signature signature) {
+		return systemManager->registerSystem<System>(signature);
 	}
 
-	template<typename System>
-	static void setSystemSignature(Signature signature) {
-		systemManager->setSignature<System>(signature);
-	}
+	//template<typename System>
+	//static void setSystemSignature(Signature signature) {
+	//	systemManager->setSignature<System>(signature);
+	//}
 
 private:
 	static std::unique_ptr<EntityManager> entityManager;
