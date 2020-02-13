@@ -71,8 +71,8 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>C:\Users\Kian\Documents\Visual Studio 2019\Projects\TOGA-Final\lib\SDL2_ttf-2.0.15\include;C:\Users\Kian\Documents\Visual Studio 2019\Projects\TOGA-Final\lib\SDL2_image-2.0.5\include;C:\Users\Kian\Documents\Visual Studio 2019\Projects\TOGA-Final\lib\SDL2-2.0.10\include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Users\Kian\Documents\Visual Studio 2019\Projects\TOGA-Final\lib\SDL2_ttf-2.0.15\lib\x86;C:\Users\Kian\Documents\Visual Studio 2019\Projects\TOGA-Final\lib\SDL2_image-2.0.5\lib\x86;C:\Users\Kian\Documents\Visual Studio 2019\Projects\TOGA-Final\lib\SDL2-2.0.10\lib\x86;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)lib\SDL2_ttf-2.0.15\include;$(SolutionDir)lib\SDL2_image-2.0.5\include;$(SolutionDir)lib\SDL2-2.0.10\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)lib\SDL2_ttf-2.0.15\lib\x86;$(SolutionDir)lib\SDL2_image-2.0.5\lib\x86;$(SolutionDir)lib\SDL2-2.0.10\lib\x86;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
