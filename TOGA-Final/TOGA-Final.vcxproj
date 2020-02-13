@@ -71,6 +71,8 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
+    <IncludePath>C:\Users\Kian\Documents\Visual Studio 2019\Projects\TOGA-Final\lib\SDL2_ttf-2.0.15\include;C:\Users\Kian\Documents\Visual Studio 2019\Projects\TOGA-Final\lib\SDL2_image-2.0.5\include;C:\Users\Kian\Documents\Visual Studio 2019\Projects\TOGA-Final\lib\SDL2-2.0.10\include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Users\Kian\Documents\Visual Studio 2019\Projects\TOGA-Final\lib\SDL2_ttf-2.0.15\lib\x86;C:\Users\Kian\Documents\Visual Studio 2019\Projects\TOGA-Final\lib\SDL2_image-2.0.5\lib\x86;C:\Users\Kian\Documents\Visual Studio 2019\Projects\TOGA-Final\lib\SDL2-2.0.10\lib\x86;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
@@ -91,6 +93,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;SDL2_ttf.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -140,15 +143,20 @@
   <ItemGroup>
     <ClCompile Include="entity_manager.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="texture.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="component.h" />
+    <ClInclude Include="component_array.h" />
     <ClInclude Include="component_manager.h" />
+    <ClInclude Include="ecs.h" />
     <ClInclude Include="system.h" />
-    <ClInclude Include="transform_component.h" />
+    <ClInclude Include="c_transform.h" />
     <ClInclude Include="entity.h" />
     <ClInclude Include="entity_manager.h" />
-    <ClInclude Include="world.h" />
+    <ClInclude Include="system_manager.h" />
+    <ClInclude Include="s_render.h" />
+    <ClInclude Include="texture.h" />
+    <ClInclude Include="types.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
