@@ -1,12 +1,16 @@
 #pragma once
 
 #include "ecs.h"
-#include "system.h"
-#include "c_ui_text.h"
-#include "c_transform.h"
+
+extern SDL_Renderer* renderer;
 
 class RenderTextSystem : public System {
 public:
+	RenderTextSystem() {
+		signature.set(ECS::getComponentId<TransformComponent>());
+		signature.set(ECS::getComponentId<UITextComponent>());
+	}
+
 	void init() override {
 		for (Entity entity : entities) {
 			UITextComponent& textComponent = ECS::getComponent<UITextComponent>(entity);
@@ -16,6 +20,7 @@ public:
 
 	void update(float dt) override {
 		for (Entity entity : entities) {
+			if (!ECS::entityManager->isActive(entity)) continue;
 			TransformComponent& transform = ECS::getComponent<TransformComponent>(entity);
 			UITextComponent& text = ECS::getComponent<UITextComponent>(entity);
 
@@ -24,10 +29,14 @@ public:
 				text.textChanged = false;
 			}
 
-			// Size of image to render
-			SDL_Rect renderQuad = { transform.x, transform.y, text.width * transform.scaleX, text.height * transform.scaleY };
-			//Render to screen
-			SDL_RenderCopyEx(renderer, text.texture, NULL, &renderQuad, transform.rot, NULL, SDL_FLIP_NONE);
+			if (text.texture != NULL) {
+				// Size of image to render
+				SDL_Rect renderQuad = { transform.x, transform.y, text.width * transform.scaleX, text.height * transform.scaleY };
+				renderQuad.x -= text.width * text.pivot.x;
+				renderQuad.y -= text.height * text.pivot.y;
+				//Render to screen
+				SDL_RenderCopyEx(renderer, text.texture, NULL, &renderQuad, transform.rot, NULL, SDL_FLIP_NONE);
+			}
 		}
 	}
 
@@ -40,6 +49,12 @@ public:
 	}
 
 	void loadTexture(UITextComponent& textComponent) {
+		if (textComponent.text == "") {
+			textComponent.texture = NULL;
+			return;
+		}
+
+		SDL_DestroyTexture(textComponent.texture);
 		SDL_Surface* surface = TTF_RenderText_Blended(textComponent.font, textComponent.text.c_str(), textComponent.colour);
 
 		if (surface != NULL) {
@@ -57,14 +72,7 @@ public:
 			SDL_FreeSurface(surface);
 		}
 		else {
-			printf("Unable to render text surface - Error: %s", TTF_GetError());
+			printf("Unable to render text surface - Error: %s\n", TTF_GetError());
 		}
 	}
-
-	void setRenderer(SDL_Renderer* renderer) {
-		this->renderer = renderer;
-	}
-
-private:
-	SDL_Renderer* renderer;
 };

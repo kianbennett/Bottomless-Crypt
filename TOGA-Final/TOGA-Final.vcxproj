@@ -142,23 +142,45 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="entity_manager.cpp" />
+    <ClCompile Include="hud.cpp" />
+    <ClCompile Include="level.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="texture.cpp" />
+    <ClCompile Include="vec2.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="bsp.h" />
+    <ClInclude Include="camera.h" />
+    <ClInclude Include="components.h" />
     <ClInclude Include="component_array.h" />
     <ClInclude Include="component_manager.h" />
+    <ClInclude Include="c_character.h" />
+    <ClInclude Include="c_chest.h" />
+    <ClInclude Include="c_item.h" />
+    <ClInclude Include="c_level_object.h" />
+    <ClInclude Include="c_monster.h" />
+    <ClInclude Include="c_weapon.h" />
+    <ClInclude Include="c_renderer.h" />
+    <ClInclude Include="c_tile.h" />
     <ClInclude Include="c_ui_text.h" />
     <ClInclude Include="ecs.h" />
+    <ClInclude Include="hud.h" />
+    <ClInclude Include="level.h" />
+    <ClInclude Include="level_object_table.h" />
+    <ClInclude Include="matrix.h" />
+    <ClInclude Include="monster_table.h" />
+    <ClInclude Include="pathfinder.h" />
     <ClInclude Include="system.h" />
     <ClInclude Include="c_transform.h" />
     <ClInclude Include="entity.h" />
     <ClInclude Include="entity_manager.h" />
     <ClInclude Include="system_manager.h" />
+    <ClInclude Include="s_move_objects.h" />
     <ClInclude Include="s_render.h" />
     <ClInclude Include="s_render_text.h" />
-    <ClInclude Include="texture.h" />
+    <ClInclude Include="s_monster_handler.h" />
+    <ClInclude Include="turn_handler.h" />
     <ClInclude Include="types.h" />
+    <ClInclude Include="vec2.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

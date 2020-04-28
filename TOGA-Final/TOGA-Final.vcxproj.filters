@@ -19,6 +19,9 @@
     <Filter Include="Header Files\systems">
       <UniqueIdentifier>{ba8e52cc-59e7-4598-b503-50563b8e5180}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\maths">
+      <UniqueIdentifier>{6de91c3c-348e-4c1a-8fff-b69da29db2ee}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -27,7 +30,13 @@
     <ClCompile Include="entity_manager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="texture.cpp">
+    <ClCompile Include="hud.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="level.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="vec2.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -62,13 +71,73 @@
     <ClInclude Include="ecs.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="texture.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="c_ui_text.h">
       <Filter>Header Files\components</Filter>
     </ClInclude>
     <ClInclude Include="s_render_text.h">
+      <Filter>Header Files\systems</Filter>
+    </ClInclude>
+    <ClInclude Include="c_renderer.h">
+      <Filter>Header Files\components</Filter>
+    </ClInclude>
+    <ClInclude Include="vec2.h">
+      <Filter>Header Files\maths</Filter>
+    </ClInclude>
+    <ClInclude Include="hud.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="level.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="camera.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="c_tile.h">
+      <Filter>Header Files\components</Filter>
+    </ClInclude>
+    <ClInclude Include="matrix.h">
+      <Filter>Header Files\maths</Filter>
+    </ClInclude>
+    <ClInclude Include="bsp.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="pathfinder.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="turn_handler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="s_monster_handler.h">
+      <Filter>Header Files\systems</Filter>
+    </ClInclude>
+    <ClInclude Include="monster_table.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="c_character.h">
+      <Filter>Header Files\components</Filter>
+    </ClInclude>
+    <ClInclude Include="c_item.h">
+      <Filter>Header Files\components</Filter>
+    </ClInclude>
+    <ClInclude Include="c_weapon.h">
+      <Filter>Header Files\components</Filter>
+    </ClInclude>
+    <ClInclude Include="components.h">
+      <Filter>Header Files\components</Filter>
+    </ClInclude>
+    <ClInclude Include="c_monster.h">
+      <Filter>Header Files\components</Filter>
+    </ClInclude>
+    <ClInclude Include="c_level_object.h">
+      <Filter>Header Files\components</Filter>
+    </ClInclude>
+    <ClInclude Include="c_chest.h">
+      <Filter>Header Files\components</Filter>
+    </ClInclude>
+    <ClInclude Include="level_object_table.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="s_move_objects.h">
       <Filter>Header Files\systems</Filter>
     </ClInclude>
   </ItemGroup>

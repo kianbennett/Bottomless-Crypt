@@ -3,11 +3,9 @@
 #include "types.h"
 
 struct Entity {
-public:
-	// This syntax is used to specify the bit size of the variable
+	// This : syntax is used to specify the bit size of the variable
 	unsigned index : 20;
 	unsigned generation : 12;
-	Signature signature;
 
 	Entity() : index(0), generation(0) {}
 	Entity(unsigned index, unsigned generation) : index(index), generation(generation) {}

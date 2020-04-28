@@ -1,7 +1,15 @@
 #pragma once
 
 #include <set>
+#include <type_traits>
+#include <functional>
 #include "entity.h"
+
+//struct comp {
+//	bool operator() (const Entity& a, const Entity& b) const {
+//		return a < b;
+//	}
+//};
 
 class System {
 public:
@@ -14,4 +22,5 @@ public:
 	virtual void init() = 0;
 	virtual void update(float dt) = 0;
 	virtual void dealloc() = 0;
+	virtual void onEntitiesChanged() {};
 };

@@ -68,6 +68,11 @@ public:
 		}
 	}
 
+	template<typename Component>
+	bool hasComponent(Entity entity) {
+		return getComponentArray<Component>()->hasComponent(entity);
+	}
+
 private:
 	// Gives each component a unique id (mapped to the string of component type name)
 	std::unordered_map<const char*, uint8_t> componentIds;

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <queue>
 #include "entity.h"
 
 class EntityManager {
@@ -25,11 +26,23 @@ public:
 	// Destroys all entities
 	void clear();
 
+	Signature& getSignature(Entity entity);
+
+	bool isActive(Entity entity);
+	void setActive(Entity entity, bool active);
+
+	// Accessor to display entity list in HUD
+	std::vector<unsigned>& getGenerations();
+
 private:
 	// Incremented when a new entity is created and no ids are available from freeIds
 	unsigned nextId;
 	// List of entity ids that are available
-	std::vector<Entity> freeEntities;
+	std::queue<Entity> freeEntities;
 	// Incremented when an entity at that index is destroyed
 	std::vector<unsigned> generations;
+
+	// TODO: Come up with a way to include these within entity struct?
+	std::vector<Signature> signatures;
+	std::vector<bool> activeEntities;
 };

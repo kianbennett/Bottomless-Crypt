@@ -16,7 +16,7 @@ public:
 	void insertComponent(Entity entity, Component component) {
 		// Check no components from the entity have already been added
 		if (entityToIndexMap.find(entity) != entityToIndexMap.end()) {
-			printf("Cannot add more that one component of the same type\n");
+			printf("Cannot add more that one component of the same type (%s)\n", typeid(Component).name());
 			return;
 		}
 
@@ -29,10 +29,12 @@ public:
 
 	void removeComponent(Entity entity) {
 		// Check the component exists in the array
-		if (entityToIndexMap.find(entity) == entityToIndexMap.end()) {
-			printf("Cannot remove component as it doesn't exist!\n");
+		if (!hasComponent(entity)) {
+			printf("Cannot remove component as it doesn't exist! (%s)\n", typeid(Component).name());
 			return;
 		}
+
+		//printf("%s\n", typeid(Component).name());
 
 		size_t index = entityToIndexMap[entity];
 		size_t indexLast = components.size() - 1;
@@ -47,7 +49,7 @@ public:
 
 		// Remove entity from index maps
 		entityToIndexMap.erase(entity);
-		indexToEntityMap.erase(index);
+		indexToEntityMap.erase(indexLast);
 
 		// Remove last component from vector (as it got already got placed in the removed position)
 		components.pop_back();
@@ -55,8 +57,8 @@ public:
 
 	Component& getComponent(Entity entity) {
 		// Check the component exists in the array
-		if (entityToIndexMap.find(entity) == entityToIndexMap.end()) {
-			printf("Cannot get component as it doesn't exist!\n");
+		if (!hasComponent(entity)) {
+			printf("Cannot get component as it doesn't exist! (%s)\n", typeid(Component).name());
 		}
 
 		// Get component in array at the entity's index
@@ -64,9 +66,13 @@ public:
 	}
 
 	void onEntityDestroyed(Entity entity) override {
-		if (entityToIndexMap.find(entity) != entityToIndexMap.end()) {
+		if (hasComponent(entity)) {
 			removeComponent(entity);
 		}
+	}
+
+	bool hasComponent(Entity entity) {
+		return entityToIndexMap.find(entity) != entityToIndexMap.end();
 	}
 
 private:
