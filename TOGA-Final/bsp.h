@@ -47,7 +47,7 @@ public:
 			vertical = !vertical;
 		}
 		size = vertical ? node->size.x : node->size.y;
-		if (size < 10 || node->level >= maxLevel) {
+		if (size < 8 || node->level >= maxLevel) {
 			SDL_Rect leaf = SDL_Rect{
 				node->pos.x, node->pos.y, node->size.x, node->size.y
 			};

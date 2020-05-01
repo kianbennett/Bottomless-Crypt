@@ -140,5 +140,8 @@
     <ClInclude Include="s_move_objects.h">
       <Filter>Header Files\systems</Filter>
     </ClInclude>
+    <ClInclude Include="item_table.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -16,4 +16,7 @@ struct WeaponComponent {
 	int damageCount; // number of "dice" to "roll"
 	int damageSize; // number of "sides" to each "dice"
 	DamageType damageType;
+
+	WeaponComponent(int damageCount, int damageSize, DamageType damageType = DamageType::None) :
+		damageCount(damageCount), damageSize(damageSize), damageType(damageType) {}
 };

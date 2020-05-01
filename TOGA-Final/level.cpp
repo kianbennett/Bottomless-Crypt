@@ -1,17 +1,21 @@
 #include "level.h"
 #include "level_object_table.h" // Putting this include in level.h causes problems, no idea why
+#include "monster_table.h"
 
 Level::Level() {
-	levelWidth = 26;
-	levelHeight = 26;
+	//levelWidth = 26;
+	//levelHeight = 26;
 
-	generate(0);
+	generate();
 	build();
 	spawnObjects();
 }
 
-void Level::generate(int depth) {
-	this->depth = depth;
+void Level::generate() {
+	// Dungeons size increases as depth increases, but is capped at a max value
+	levelWidth = std::min(16 + depth * 2, 50);
+	levelHeight = std::min(16 + depth * 2, 50);
+
 	tiles = Matrix<Tile>(levelWidth, levelHeight);
 
 	// Populate the level with empty tiles
@@ -23,6 +27,9 @@ void Level::generate(int depth) {
 
 	// Split the level into rooms
 	bsp.build(Vec2Int(), Vec2Int(levelWidth, levelHeight), 5);
+
+	// We don't want only one room, so as a quick solution just regenerate (since this isn't a common occurence)
+	if (bsp.rooms.size() == 1) generate();
 
 	Vec2Int startPoint = bsp.rooms.begin()->first->centrePoint();
 	std::vector<BSPNode*> orderedRooms;
@@ -121,22 +128,58 @@ void Level::spawnObjects() {
 	for (std::pair<BSPNode*, SDL_Rect> room : bsp.rooms) {
 		SDL_Rect rect = room.second;
 		int area = rect.w * rect.h;
+		bool bigRoom = area > 50;
 
-		int chests = rand() % (area > 60 ? 5 : 3);
-
+		// Spawn chests
+		int chests = bigRoom ? (1 + rand() % 4) : (1 + rand() % 2);
 		for (int i = 0; i < chests; i++) {
 			int x = rand() % rect.w;
 			int y = rand() % rect.h;
 			Tile& tile = tiles.get(Vec2Int(rect.x + x, rect.y + y));
 
 			// Ensure no chests are blocking corridors or placed on other objects
-			if (!isTileBlockingCorridor(tile) && !isObjectOnTile(tile.pos)) {
-				allEntities.push_back(LevelObjectTable::chest(this, tile, depth));
+			if (!isTileBlockingCorridor(tile) && !isObjectOnTile(tile.pos) && tile.pos != endTile.pos) {
+				allEntities.push_back(LevelObjectTable::chest(this, tile));
+			}
+		}
+
+		int spikes = bigRoom ? (5 + rand() % 5) : (2 + rand() % 4);
+		for (int i = 0; i < chests; i++) {
+			int x = rand() % rect.w;
+			int y = rand() % rect.h;
+			Tile& tile = tiles.get(Vec2Int(rect.x + x, rect.y + y));
+
+			// Ensure no chests are blocking corridors or placed on other objects
+			if (!isTileBlockingCorridor(tile) && !isObjectOnTile(tile.pos) && tile.pos != endTile.pos) {
+				allEntities.push_back(LevelObjectTable::spikes(this, tile));
+			}
+		}
+
+		// Spawn monsters in every room but at the end
+		if (room.first != startNode) {
+			int monsters = rand() % (bigRoom ? 5 : 3);
+
+			for (int i = 0; i < chests; i++) {
+				int x = rand() % rect.w;
+				int y = rand() % rect.h;
+				Tile& tile = tiles.get(Vec2Int(rect.x + x, rect.y + y));
+
+				// Ensure no chests are blocking corridors or placed on other objects
+				if (!isTileBlockingCorridor(tile) && !isObjectOnTile(tile.pos) && tile.pos != endTile.pos) {
+					allEntities.push_back(MonsterTable::getMonster(this, tile));
+				}
 			}
 		}
 	}
 
 	renderSystem->sortEntities();
+}
+
+void Level::createLevel(int depth) {
+	this->depth = depth;
+	generate();
+	build();
+	spawnObjects();
 }
 
 SDL_Rect Level::getNextPointInArea(std::vector<SDL_Rect> existing, int w, int h) {
@@ -170,12 +213,21 @@ void Level::update(float dt) {
 
 void Level::dealloc() {
 	for (int i = 0; i < allEntities.size(); i++) {
+		ECS::entityManager->setActive(allEntities[i], true);
 		ECS::destroyEntity(allEntities[i]);
 	}
 	allEntities.clear();
 
 	levelObjects = {};
 	player = {};
+}
+
+void Level::destroyLevelObject(Entity entity) {
+	levelObjects.erase(ECS::getComponent<LevelObjectComponent>(entity).tile.pos);
+	// Destroying entities here causes problems and I'm not sure why
+	// Setting them to inactive isn't optimal but the result is the same
+	//ECS::destroyEntity(entity);
+	ECS::entityManager->setActive(entity, false);
 }
 
 int Level::getWidth() {

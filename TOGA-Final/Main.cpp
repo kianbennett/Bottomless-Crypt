@@ -39,6 +39,7 @@ Level* level;
 Camera camera;
 
 bool showDebug;
+bool showInventory;
 float deltaTime;
 Uint32 lastTime;
 
@@ -67,6 +68,9 @@ int main(int argc, char* args[]) {
 	renderTextSystem->init();
 	moveObjectSystem->init();
 
+	hud->updatePlayerStats(ECS::getComponent<CharacterComponent>(level->player));
+	hud->updateInventory(ECS::getComponent<CharacterComponent>(level->player));
+
 	showDebug = true;
 	bool quit = false;
 	SDL_Event e;
@@ -92,9 +96,7 @@ int main(int argc, char* args[]) {
 						hud->updateDebugInfo(showDebug);
 						break;
 					case SDLK_r:
-						level->generate(0);
-						level->build();
-						level->spawnObjects();
+						level->createLevel(level->depth);
 						break;
 					case SDLK_w:
 						TurnHandler::takeTurn(Direction::Up);
@@ -110,6 +112,10 @@ int main(int argc, char* args[]) {
 						break;
 					case SDLK_SPACE:
 						TurnHandler::descend();
+						break;
+					case SDLK_i:
+						showInventory = !showInventory;
+						hud->updateInventory(ECS::getComponent<CharacterComponent>(level->player));
 						break;
 				}
 			}

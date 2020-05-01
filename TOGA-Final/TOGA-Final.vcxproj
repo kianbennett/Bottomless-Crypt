@@ -164,6 +164,7 @@
     <ClInclude Include="c_ui_text.h" />
     <ClInclude Include="ecs.h" />
     <ClInclude Include="hud.h" />
+    <ClInclude Include="item_table.h" />
     <ClInclude Include="level.h" />
     <ClInclude Include="level_object_table.h" />
     <ClInclude Include="matrix.h" />

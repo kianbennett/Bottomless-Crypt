@@ -4,7 +4,7 @@
 #include "c_tile.h"
 
 enum class LevelObjectType {
-	Player, Chest, Monster
+	Player, Chest, Monster, Spikes
 };
 
 struct LevelObjectComponent {

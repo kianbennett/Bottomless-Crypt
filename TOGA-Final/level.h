@@ -28,9 +28,7 @@ public:
 
 	Level();
 
-	void generate(int depth);
-	void build();
-	void spawnObjects();
+	void createLevel(int depth);
 	void update(float dt);
 	void dealloc();
 
@@ -42,10 +40,15 @@ public:
 	SDL_Rect getNextPointInArea(std::vector<SDL_Rect> existing, int w, int h);
 	bool isTileBlockingCorridor(Tile tile);
 	bool isObjectOnTile(Vec2Int pos);
+	void destroyLevelObject(Entity entity);
 
 	void drawDebug();
 
 private:
 	BSP bsp;
 	int levelWidth, levelHeight;
+
+	void generate();
+	void build();
+	void spawnObjects();
 };
