@@ -15,8 +15,8 @@
 #include "pathfinder.h"
 #include "turn_handler.h"
 
-const int SCREEN_WIDTH = 800;
-const int SCREEN_HEIGHT = 600;
+const int SCREEN_WIDTH = 1200;
+const int SCREEN_HEIGHT = 800;
 
 void initSDL();
 void loadResources();
@@ -55,7 +55,6 @@ int main(int argc, char* args[]) {
 	ECS::registerComponent<RendererComponent>();
 	ECS::registerComponent<TransformComponent>();
 	ECS::registerComponent<UITextComponent>();
-	ECS::registerComponent<WeaponComponent>();
 
 	renderSystem = ECS::registerSystem<RenderSystem>();
 	renderTextSystem = ECS::registerSystem<RenderTextSystem>();
@@ -69,9 +68,10 @@ int main(int argc, char* args[]) {
 	moveObjectSystem->init();
 
 	hud->updatePlayerStats(ECS::getComponent<CharacterComponent>(level->player));
-	hud->updateInventory(ECS::getComponent<CharacterComponent>(level->player));
+	hud->updateInventory();
 
 	showDebug = true;
+	showInventory = false;
 	bool quit = false;
 	SDL_Event e;
 
@@ -99,23 +99,31 @@ int main(int argc, char* args[]) {
 						level->createLevel(level->depth);
 						break;
 					case SDLK_w:
-						TurnHandler::takeTurn(Direction::Up);
+						if (showInventory) hud->prevInventoryItem();
+							else TurnHandler::takeTurn(Direction::Up);
 						break;
 					case SDLK_s:
-						TurnHandler::takeTurn(Direction::Down);
+						if (showInventory) hud->nextInventoryItem();
+							else TurnHandler::takeTurn(Direction::Down);
 						break;
 					case SDLK_a:
-						TurnHandler::takeTurn(Direction::Left);
+						if(!showInventory) TurnHandler::takeTurn(Direction::Left);
 						break;
 					case SDLK_d:
-						TurnHandler::takeTurn(Direction::Right);
+						if (!showInventory) TurnHandler::takeTurn(Direction::Right);
 						break;
 					case SDLK_SPACE:
-						TurnHandler::descend();
+						if (!showInventory) TurnHandler::descend();
 						break;
 					case SDLK_i:
 						showInventory = !showInventory;
-						hud->updateInventory(ECS::getComponent<CharacterComponent>(level->player));
+						hud->updateInventory();
+						break;
+					case SDLK_e:
+						if (showInventory) TurnHandler::useItem();
+						break;
+					case SDLK_x:
+						if (showInventory) TurnHandler::dropItem();
 						break;
 				}
 			}

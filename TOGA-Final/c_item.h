@@ -2,11 +2,15 @@
 
 #include <string>
 
+enum class ItemType {
+	Weapon, Potion, Misc
+};
+
 struct ItemComponent {
 
 	std::string name;
-	int value;
-	int weight;
+	ItemType type;
+	int strength, value;
 
-	ItemComponent(std::string name, int value, int weight) : name(name), value(value), weight(weight) {}
+	ItemComponent(std::string name, ItemType type, int strength, int value) : name(name), type(type), strength(strength), value(value) {}
 };

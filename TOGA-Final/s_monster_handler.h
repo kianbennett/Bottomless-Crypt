@@ -7,7 +7,7 @@ public:
 
 	MonsterHandlerSystem() {
 		signature.set(ECS::getComponentId<TransformComponent>());
-		signature.set(ECS::getComponentId<MoveableComponent>());
+		signature.set(ECS::getComponentId<LevelObjectComponent>());
 		signature.set(ECS::getComponentId<MonsterComponent>());
 	}
 

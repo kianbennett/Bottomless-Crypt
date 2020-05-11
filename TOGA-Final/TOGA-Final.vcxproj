@@ -158,7 +158,6 @@
     <ClInclude Include="c_item.h" />
     <ClInclude Include="c_level_object.h" />
     <ClInclude Include="c_monster.h" />
-    <ClInclude Include="c_weapon.h" />
     <ClInclude Include="c_renderer.h" />
     <ClInclude Include="c_tile.h" />
     <ClInclude Include="c_ui_text.h" />

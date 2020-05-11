@@ -119,9 +119,6 @@
     <ClInclude Include="c_item.h">
       <Filter>Header Files\components</Filter>
     </ClInclude>
-    <ClInclude Include="c_weapon.h">
-      <Filter>Header Files\components</Filter>
-    </ClInclude>
     <ClInclude Include="components.h">
       <Filter>Header Files\components</Filter>
     </ClInclude>

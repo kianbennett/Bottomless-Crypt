@@ -61,6 +61,62 @@ public:
 		}
 	}
 
+	static bool damageCharacter(Entity entity, int value) {
+		CharacterComponent& character = ECS::getComponent<CharacterComponent>(entity);
+
+		character.healthCurrent -= value;
+		if (entity == level->player) {
+			hud->updatePlayerStats(ECS::getComponent<CharacterComponent>(level->player));
+		}
+		// If healing don't let health go above max health
+		if (character.healthCurrent > character.healthMax) {
+			character.healthCurrent = character.healthMax;
+		}
+		if (character.healthCurrent <= 0) {
+			if (entity == level->player) {
+				level->createLevel(0);
+			}
+			else {
+				level->destroyLevelObject(entity);
+			}
+			return true;
+		}
+		return false;
+	}
+
+	static void dropItem() {
+		CharacterComponent& playerCharacter = ECS::getComponent<CharacterComponent>(level->player);
+		if (playerCharacter.equippedWeapon != nullptr && playerCharacter.inventory[hud->inventoryIndex] == *playerCharacter.equippedWeapon) {
+			playerCharacter.equippedWeapon = nullptr;
+		}
+		playerCharacter.inventory.erase(playerCharacter.inventory.begin() + hud->inventoryIndex);
+
+		hud->updateInventory();
+	}
+
+	static void useItem() {
+		CharacterComponent& playerCharacter = ECS::getComponent<CharacterComponent>(level->player);
+		ItemComponent& item = ECS::getComponent<ItemComponent>(playerCharacter.inventory[hud->inventoryIndex]);
+
+		switch (item.type) {
+		case ItemType::Weapon:
+			if (playerCharacter.equippedWeapon == &playerCharacter.inventory[hud->inventoryIndex]) {
+				playerCharacter.equippedWeapon = nullptr;
+			}
+			else {
+				playerCharacter.equippedWeapon = &playerCharacter.inventory[hud->inventoryIndex];
+			}
+			hud->updateInventory();
+			break;
+		case ItemType::Potion:
+			TurnHandler::damageCharacter(level->player, -item.strength);
+			dropItem();
+			break;
+		case ItemType::Misc:
+			break;
+		}
+	}
+
 private:
 
 	static void moveCharacterToTile(Entity entity, Tile tileCurrent, Tile tileTarget) {
@@ -109,34 +165,14 @@ private:
 		}
 	}
 
-	static bool damageCharacter(Entity entity, int value) {
-		CharacterComponent& character = ECS::getComponent<CharacterComponent>(entity);
-
-		character.healthCurrent -= value;
-		if (entity == level->player) {
-			hud->updatePlayerStats(ECS::getComponent<CharacterComponent>(level->player));
-		}
-		// If healing don't let health go above max health
-		if (character.healthCurrent > character.healthMax) {
-			character.healthCurrent = character.healthMax;
-		}
-		if (character.healthCurrent <= 0) {
-			if (entity == level->player) {
-				level->createLevel(0);
-			} else {
-				level->destroyLevelObject(entity);
-			}
-			return true;
-		}
-		return false;
-	}
-
 	static void attack(Entity attacker, Entity defender) {
 		CharacterComponent& charAttacker = ECS::getComponent<CharacterComponent>(attacker);
 		CharacterComponent& charDefender = ECS::getComponent<CharacterComponent>(defender);
 
-		int damage = charAttacker.strength / 2.0f - charDefender.defence / 4.0f;
-		if (damage < 1) damage = 1; // damage must always be a positive value
+		int damage = 1;
+		if (charAttacker.equippedWeapon != nullptr) {
+			damage += ECS::getComponent<ItemComponent>(*charAttacker.equippedWeapon).strength;
+		}
 
 		std::string str = "";
 
@@ -168,22 +204,38 @@ private:
 	static void openChest(Entity entity) {
 		RendererComponent& renderer = ECS::getComponent<RendererComponent>(entity);
 		ChestComponent& chest = ECS::getComponent<ChestComponent>(entity);
+
 		if (!chest.opened) {
 			CharacterComponent& playerCharacter = ECS::getComponent<CharacterComponent>(level->player);
-			renderer.textureClip = { 16, 32, 16, 16 };
-			hud->addNotification("Opened chest, received " + std::to_string(chest.gold) + " gold.");
-			playerCharacter.gold += chest.gold;
-			hud->updatePlayerStats(playerCharacter);
-			chest.opened = true;
+			bool inventoryFull = playerCharacter.inventory.size() >= playerCharacter.inventoryLimit;
 
-			Entity item = ItemTable::getItem(level);
-			if (playerCharacter.inventory.size() < playerCharacter.inventoryLimit) {
+			if (!inventoryFull) {
+				renderer.textureClip = { 16, 32, 16, 16 };
+
+				int gold = 0;
+				if (rand() % 2) { // 50% chance for a chest to also contain gold
+					gold = (level->depth + 1) * (2 + rand() % 10);
+				}
+
+				if (gold) {
+					hud->addNotification("Opened chest, received " + std::to_string(gold) + " gold.");
+				}
+				else {
+					hud->addNotification("Opened chest.");
+				}
+
+				playerCharacter.gold += gold;
+				hud->updatePlayerStats(playerCharacter);
+				chest.opened = true;
+
+				Entity item = ItemTable::getItem(level);
+				std::string name = ECS::getComponent<ItemComponent>(item).name;
 				playerCharacter.inventory.push_back(item);
-				hud->updateInventory(playerCharacter);
-				hud->addNotification("You found a " + ECS::getComponent<ItemComponent>(item).name + "!");
+				hud->updateInventory();
+				hud->addNotification("You found " + nounArticle(name) + " " + name + "!");
 			}
 			else {
-				hud->addNotification("Your inventory is full, unable to pick up item.");
+				hud->addNotification("Your inventory is full, cannot open chest!");
 			}
 		}
 	}

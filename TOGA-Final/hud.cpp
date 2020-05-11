@@ -1,57 +1,30 @@
 #include "hud.h"
 
-extern const int SCREEN_WIDTH;
-extern const int SCREEN_HEIGHT;
-
 HUD::HUD() {
-	timeText = ECS::createEntity();
-	ECS::addComponent(timeText, TransformComponent(5, 5));
-	ECS::addComponent(timeText, UITextComponent("", { 0xFF, 0xFF, 0xFF }, font));
+	timeText = createTextEntity(5, 5);
+	infoText = createTextEntity(5, 25);
+	levelText = createTextEntity(5, 45);
+	goldText = createTextEntity(5, 85, { 0xFF, 0xEE, 0xAA });
+	healthText = createTextEntity(5, 105, { 0xFF, 0xDD, 0xDD });
+	tooltipText = createTextEntity(SCREEN_WIDTH - 5, SCREEN_HEIGHT - 25, { 0xFF, 0xFF, 0xFF }, Vec2Int(1, 0));
 
-	infoText = ECS::createEntity();
-	ECS::addComponent(infoText, TransformComponent(5, 25));
-	ECS::addComponent(infoText, UITextComponent("", { 0xFF, 0xFF, 0xFF }, font));
+	inventoryText = createTextEntity(SCREEN_WIDTH - 5, 5, { 0xFF, 0xFF, 0xFF }, Vec2Int(1, 0));
+	inventoryDivider1 = createTextEntity(SCREEN_WIDTH - 5, 15, { 0x88, 0x88, 0x88 }, Vec2Int(1, 0), "__________________________________");
+	inventoryHeader =	createTextEntity(SCREEN_WIDTH - 5, 34, { 0xFF, 0xFF, 0xFF }, Vec2Int(1, 0), " Item                 |  E  |  G  ");
+	inventoryDivider2 = createTextEntity(SCREEN_WIDTH - 5, 37, { 0x88, 0x88, 0x88 }, Vec2Int(1, 0), "__________________________________");
 
-	levelText = ECS::createEntity();
-	ECS::addComponent(levelText, TransformComponent(5, 45));
-	ECS::addComponent(levelText, UITextComponent("", { 0xFF, 0xFF, 0xFF }, font));
-
-	goldText = ECS::createEntity();
-	ECS::addComponent(goldText, TransformComponent(5, 85));
-	ECS::addComponent(goldText, UITextComponent("", { 0xFF, 0xEE, 0xAA }, font));
-
-	healthText = ECS::createEntity();
-	ECS::addComponent(healthText, TransformComponent(5, 105));
-	ECS::addComponent(healthText, UITextComponent("", { 0xFF, 0xDD, 0xDD }, font));
-
-	strengthText = ECS::createEntity();
-	ECS::addComponent(strengthText, TransformComponent(5, 125));
-	ECS::addComponent(strengthText, UITextComponent("", { 0xFF, 0xFF, 0xFF }, font));
-
-	defenceText = ECS::createEntity();
-	ECS::addComponent(defenceText, TransformComponent(5, 145));
-	ECS::addComponent(defenceText, UITextComponent("", { 0xFF, 0xFF, 0xFF }, font));
-
-	inventoryText = ECS::createEntity();
-	ECS::addComponent(inventoryText, TransformComponent(SCREEN_WIDTH - 5, 5));
-	ECS::addComponent(inventoryText, UITextComponent("", { 0xFF, 0xFF, 0xFF }, font, Vec2Int(1, 0)));
-
-	tooltipText = ECS::createEntity();
-	ECS::addComponent(tooltipText, TransformComponent(SCREEN_WIDTH - 5, SCREEN_HEIGHT - 25));
-	ECS::addComponent(tooltipText, UITextComponent("", { 0xFF, 0xFF, 0xFF }, font, Vec2Int(1, 0)));
+	inventoryMarker = createTextEntity(SCREEN_WIDTH - 386, 62, { 0xFF, 0xFF, 0xFF }, Vec2(), ">");
 
 	for (int i = 0; i < 8; i++) {
-		inventoryItems[i] = ECS::createEntity();
-		ECS::addComponent(inventoryItems[i], TransformComponent(SCREEN_WIDTH - 5, 25 + 20 * i));
-		ECS::addComponent(inventoryItems[i], UITextComponent("", { 0xFF, 0xFF, 0xFF }, font, Vec2Int(1, 0)));
+		inventoryLines[i].name = createTextEntity(SCREEN_WIDTH - 368, 62 + 22 * i, { 0xFF, 0xFF, 0xFF });
+		inventoryLines[i].strength = createTextEntity(SCREEN_WIDTH - 98, 62 + 22 * i, { 0xFF, 0xFF, 0xFF }, Vec2(0.5f, 0));
+		inventoryLines[i].gold = createTextEntity(SCREEN_WIDTH - 32, 62 + 22 * i, { 0xFF, 0xFF, 0xFF }, Vec2(0.5f, 0));
 	}
 
 	for (int i = 0; i < 3; i++) {
 		SDL_Color colour = { 0xFF, 0xFF, 0xFF, 0xFF };
 		if(i == 2) colour.a = 0XAA;
-		notificationLines[i] = ECS::createEntity();
-		ECS::addComponent(notificationLines[i], TransformComponent(5, SCREEN_HEIGHT - 25 - i * 25));
-		ECS::addComponent(notificationLines[i], UITextComponent("", colour, font));
+		notificationLines[i] = createTextEntity(5, SCREEN_HEIGHT - 25 - i * 25);
 	}
 
 	fpsCheckTime = 0;
@@ -115,12 +88,6 @@ void HUD::updatePlayerStats(CharacterComponent character) {
 	std::string healthString = "health: " + std::to_string(character.healthCurrent) + " / " + std::to_string(character.healthMax);
 	ECS::getComponent<UITextComponent>(healthText).text = healthString;
 	ECS::getComponent<UITextComponent>(healthText).textChanged = true;
-
-	ECS::getComponent<UITextComponent>(strengthText).text = "strength: " + std::to_string(character.strength);
-	ECS::getComponent<UITextComponent>(strengthText).textChanged = true;
-
-	ECS::getComponent<UITextComponent>(defenceText).text = "defence: " + std::to_string(character.defence);
-	ECS::getComponent<UITextComponent>(defenceText).textChanged = true;
 }
 
 void HUD::setTooltip(std::string text) {
@@ -136,19 +103,59 @@ void HUD::addNotification(std::string text) {
 	}
 }
 
-void HUD::updateInventory(CharacterComponent character) {
+void HUD::updateInventory() {
+	CharacterComponent character = ECS::getComponent<CharacterComponent>(level->player);
 	ECS::getComponent<UITextComponent>(inventoryText).text = "Inventory (I) " +
 		std::to_string(character.inventory.size()) + " / " + std::to_string(character.inventoryLimit);
 	ECS::getComponent<UITextComponent>(inventoryText).textChanged = true;
 
+	ECS::entityManager->setActive(inventoryHeader, showInventory);
+	ECS::entityManager->setActive(inventoryDivider1, showInventory);
+	ECS::entityManager->setActive(inventoryDivider2, showInventory);
+	ECS::entityManager->setActive(inventoryMarker, showInventory && character.inventory.size() > 0);
+
 	for (int i = 0; i < 8; i++) {
 		bool show = showInventory && i < character.inventory.size();
-		ECS::entityManager->setActive(inventoryItems[i], show);
+		inventoryLines[i].setActive(show);
 
 		if (i < character.inventory.size()) {
 			ItemComponent item = ECS::getComponent<ItemComponent>(character.inventory[i]);
-			ECS::getComponent<UITextComponent>(inventoryItems[i]).text = item.name;
-			ECS::getComponent<UITextComponent>(inventoryItems[i]).textChanged = true;
+			inventoryLines[i].setValues(item, character.equippedWeapon != nullptr && character.inventory[i] == *character.equippedWeapon);
 		}
 	}
+
+	updateInventoryIndex(inventoryIndex);
+}
+
+void HUD::nextInventoryItem() {
+	CharacterComponent character = ECS::getComponent<CharacterComponent>(level->player);
+	inventoryIndex++;
+	if (inventoryIndex >= character.inventory.size()) {
+		inventoryIndex = 0;
+	}
+	updateInventoryIndex(inventoryIndex);
+}
+
+void HUD::prevInventoryItem() {
+	CharacterComponent character = ECS::getComponent<CharacterComponent>(level->player);
+	inventoryIndex--;
+	if (inventoryIndex < 0) {
+		inventoryIndex = character.inventory.size() - 1;
+	}
+	updateInventoryIndex(inventoryIndex);
+}
+
+void HUD::updateInventoryIndex(int index) {
+	CharacterComponent character = ECS::getComponent<CharacterComponent>(level->player);
+	if (index >= character.inventory.size()) index = character.inventory.size() - 1;
+	inventoryIndex = index;
+	TransformComponent& transform = ECS::getComponent<TransformComponent>(inventoryMarker);
+	transform.setPos(Vec2(transform.x, 62 + 22 * index));
+}
+
+Entity HUD::createTextEntity(int x, int y, SDL_Color color, Vec2 pivot, std::string text) {
+	Entity entity = ECS::createEntity();
+	ECS::addComponent(entity, TransformComponent(x, y));
+	ECS::addComponent(entity, UITextComponent(text, color, font, pivot));
+	return entity;
 }

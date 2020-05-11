@@ -9,7 +9,7 @@ class Camera {
 public:
 	Camera(Vec2 pos = Vec2()) {
 		position = pos;
-		scale = 0.25f;
+		scale = 0.5f;
 	}
 
 	Vec2 getPosition() {

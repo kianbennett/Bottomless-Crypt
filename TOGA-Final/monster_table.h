@@ -32,16 +32,16 @@ public:
 	static Entity rat(Level* level, Tile tile) {
 		Entity entity = baseMonster(level, tile);
 		ECS::addComponent(entity, RendererComponent(Vec2Int(64, 64), spritesheet, { 16, 0, 16, 16 }, 2));
-		ECS::addComponent(entity, CharacterComponent("rat", 1, 0 + rand() % 3, 2, 4));
-		ECS::addComponent(entity, MonsterComponent());
+		ECS::addComponent(entity, CharacterComponent("rat", 1, 0 + rand() % 3));
+		ECS::addComponent(entity, MonsterComponent(2));
 		return entity;
 	}
 
 	static Entity slime(Level* level, Tile tile) {
 		Entity entity = baseMonster(level, tile);
 		ECS::addComponent(entity, RendererComponent(Vec2Int(64, 64), spritesheet, { 0, 0, 16, 16 }, 2));
-		ECS::addComponent(entity, CharacterComponent("slime", 15, 5 + rand() % 5, 8, 8));
-		ECS::addComponent(entity, MonsterComponent());
+		ECS::addComponent(entity, CharacterComponent("slime", 15, 5 + rand() % 5));
+		ECS::addComponent(entity, MonsterComponent(8));
 		return entity;
 	}
 	
@@ -49,48 +49,48 @@ public:
 	static Entity goblin(Level* level, Tile tile) {
 		Entity entity = baseMonster(level, tile);
 		ECS::addComponent(entity, RendererComponent(Vec2Int(64, 64), spritesheet, { 32, 0, 16, 16 }, 2));
-		ECS::addComponent(entity, CharacterComponent("goblin", 30, 8 + rand() % 8, 12, 8));
-		ECS::addComponent(entity, MonsterComponent());
+		ECS::addComponent(entity, CharacterComponent("goblin", 30, 8 + rand() % 8));
+		ECS::addComponent(entity, MonsterComponent(12));
 		return entity;
 	}
 
 	static Entity kobold(Level* level, Tile tile) {
 		Entity entity = baseMonster(level, tile);
 		ECS::addComponent(entity, RendererComponent(Vec2Int(64, 64), spritesheet, { 48, 0, 16, 16 }, 2));
-		ECS::addComponent(entity, CharacterComponent("kobold", 35, 10 + rand() % 10, 15, 10));
-		ECS::addComponent(entity, MonsterComponent());
+		ECS::addComponent(entity, CharacterComponent("kobold", 35, 10 + rand() % 10));
+		ECS::addComponent(entity, MonsterComponent(15));
 		return entity;
 	}
 
 	static Entity orc(Level* level, Tile tile) {
 		Entity entity = baseMonster(level, tile);
 		ECS::addComponent(entity, RendererComponent(Vec2Int(64, 64), spritesheet, { 0, 16, 16, 16 }, 2));
-		ECS::addComponent(entity, CharacterComponent("orc", 45, 15 + rand() % 15, 20, 15));
-		ECS::addComponent(entity, MonsterComponent());
+		ECS::addComponent(entity, CharacterComponent("orc", 45, 15 + rand() % 15));
+		ECS::addComponent(entity, MonsterComponent(20));
 		return entity;
 	}
 
 	static Entity orcCaptain(Level* level, Tile tile) {
 		Entity entity = baseMonster(level, tile);
 		ECS::addComponent(entity, RendererComponent(Vec2Int(64, 64), spritesheet, { 16, 16, 16, 16 }, 2));
-		ECS::addComponent(entity, CharacterComponent("orc captain", 50, 20 + rand() % 20, 22, 20));
-		ECS::addComponent(entity, MonsterComponent());
+		ECS::addComponent(entity, CharacterComponent("orc captain", 50, 20 + rand() % 20));
+		ECS::addComponent(entity, MonsterComponent(22));
 		return entity;
 	}
 
 	static Entity minotaur(Level* level, Tile tile) {
 		Entity entity = baseMonster(level, tile);
 		ECS::addComponent(entity, RendererComponent(Vec2Int(64, 64), spritesheet, { 32, 16, 16, 16 }, 2));
-		ECS::addComponent(entity, CharacterComponent("minotaur", 70, 30 + rand() % 30, 30, 25));
-		ECS::addComponent(entity, MonsterComponent());
+		ECS::addComponent(entity, CharacterComponent("minotaur", 70, 30 + rand() % 30));
+		ECS::addComponent(entity, MonsterComponent(30));
 		return entity;
 	}
 
 	static Entity werewolf(Level* level, Tile tile) {
 		Entity entity = baseMonster(level, tile);
 		ECS::addComponent(entity, RendererComponent(Vec2Int(64, 64), spritesheet, { 48, 16, 16, 16 }, 2));
-		ECS::addComponent(entity, CharacterComponent("werewolf", 80, 50 + rand() % 50, 40, 40));
-		ECS::addComponent(entity, MonsterComponent(DamageType::Silver));
+		ECS::addComponent(entity, CharacterComponent("werewolf", 80, 50 + rand() % 50));
+		ECS::addComponent(entity, MonsterComponent(40));
 		return entity;
 	}
 

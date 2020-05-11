@@ -4,9 +4,7 @@
 
 struct ChestComponent {
 
-	std::vector<ItemComponent> inventory;
-	int gold;
 	bool opened;
 
-	ChestComponent(int gold) : gold(gold), opened(false) {}
+	ChestComponent() : opened(false) {}
 };

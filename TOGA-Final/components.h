@@ -9,4 +9,3 @@
 #include "c_tile.h"
 #include "c_transform.h"
 #include "c_ui_text.h"
-#include "c_weapon.h"
