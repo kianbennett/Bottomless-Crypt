@@ -140,5 +140,11 @@
     <ClInclude Include="item_table.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="start_screen.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="end_screen.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

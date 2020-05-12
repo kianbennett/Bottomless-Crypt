@@ -6,7 +6,6 @@
 #include "pathfinder.h"
 #include "s_render.h"
 #include "components.h"
-
 #include <map>
 
 extern std::shared_ptr<RenderSystem> renderSystem;
@@ -26,7 +25,7 @@ public:
 	std::vector<Entity> allEntities;
 	Tile endTile;
 
-	Level();
+	Level() {}
 
 	void createLevel(int depth);
 	void update(float dt);

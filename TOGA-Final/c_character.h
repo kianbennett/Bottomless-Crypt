@@ -13,6 +13,8 @@ struct CharacterComponent {
 	int healthMax, healthCurrent;
 	int gold;
 
+	CharacterComponent() {}
+
 	CharacterComponent(std::string name, int health, int gold) : name(name), 
 		healthMax(health), healthCurrent(health), gold(gold), inventoryLimit(8), equippedWeapon(nullptr) {}
 };

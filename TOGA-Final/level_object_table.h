@@ -7,7 +7,7 @@ public:
 	static Entity player(Level* level, Tile& tile, std::string name) {
 		Entity entity = baseObject(level, tile, LevelObjectType::Player);
 		ECS::addComponent(entity, RendererComponent(Vec2Int(32, 32), { 0xFF, 0xAA, 0xAA, 0xFF }, 4));
-		ECS::addComponent(entity, CharacterComponent(name, 30, 0, 20, 20));
+		ECS::addComponent(entity, CharacterComponent(name, 30, 0));
 
 		return entity;
 	}

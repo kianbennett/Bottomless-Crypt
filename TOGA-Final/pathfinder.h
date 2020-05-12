@@ -5,13 +5,13 @@
 #include "vec2.h"
 #include "matrix.h"
 
-struct GridNode {
-	Vec2Int pos;
-	float cost;
-
-	GridNode() : pos(0, 0), cost(0) {}
-	GridNode(Vec2Int pos, float cost) : pos(pos), cost(cost) {}
-};
+//struct GridNode {
+//	Vec2Int pos;
+//	float cost;
+//
+//	GridNode() : pos(0, 0), cost(0) {}
+//	GridNode(Vec2Int pos, float cost) : pos(pos), cost(cost) {}
+//};
 
 struct PathNode {
 	Vec2Int pos;
@@ -28,18 +28,20 @@ struct PathNode {
 
 class Pathfinder {
 public:
-	static std::vector<Vec2Int> findPathOnGrid(Matrix<GridNode> gridPoints, Vec2Int start, Vec2Int destination) {
+	static std::vector<Tile> findPathOnTileGrid(Matrix<Tile> tiles, Tile start, Tile destination) {
 		// Open list contains points that are being considered for the path
 		std::vector<PathNode*> openList;
 		// Closed list contains points that have been used up and are no longer being considered
 		std::vector<PathNode*> closedList;
 
-		// Create a new grid of nodes based on the input grid, since nodes need to be able to keep track of their parent
-		Matrix<PathNode*> nodeGrid(gridPoints.getWidth(), gridPoints.getHeight());
+		// Create a new grid of nodes based on the tile matrix, since nodes need to be able to keep track of their parent
+		Matrix<PathNode*> nodeGrid(tiles.getWidth(), tiles.getHeight());
 		for (int i = 0; i < nodeGrid.getWidth(); i++) {
 			for (int j = 0; j < nodeGrid.getHeight(); j++) {
-				GridNode gridNode = gridPoints.get(i, j);
-				PathNode* node = new PathNode(gridNode.pos, gridNode.cost);
+				Tile tile = tiles.get(i, j);
+				int cost = 0;
+				if (tile.type == TileType::Empty) cost = 10;
+				PathNode* node = new PathNode(tile.pos, cost);
 				nodeGrid.set(i, j, node);
 			}
 		}
@@ -47,7 +49,7 @@ public:
 		setUpConnections(nodeGrid);
 
 		// Begin with start point
-		PathNode* nodeCurrent = nodeGrid.get(start.x, start.y);
+		PathNode* nodeCurrent = nodeGrid.get(start.pos);
 		openList.push_back(nodeCurrent);
 
 		// Keep looping as long as there are still nodes to check and the target hasn't been reached
@@ -59,7 +61,7 @@ public:
 			//nodeCurrent->heuristic = heuristic(nodeCurrent->pos, destination);
 
 			// Stop if the node is the destination
-			if (nodeCurrent->pos == destination) break;
+			if (nodeCurrent->pos == destination.pos) break;
 
 			// Remove the node from the open list and add it to the closed list
 			// Erase-remove idiom https://stackoverflow.com/questions/3385229/c-erase-vector-element-by-value-rather-than-by-position
@@ -72,7 +74,7 @@ public:
 				
 				bool inOpenList = std::find(openList.begin(), openList.end(), node) != openList.end();
 				if (!inOpenList) {
-					node->heuristic = heuristic(node->pos, destination);
+					node->heuristic = heuristic(node->pos, destination.pos);
 					node->parent = nodeCurrent;
 					openList.push_back(node);
 				}
@@ -80,10 +82,10 @@ public:
 		}
 
 		// Get path by traversing linked list backwards
-		std::vector<Vec2Int> path;
+		std::vector<Tile> path;
 		PathNode* n = nodeCurrent;
 		while (n != nullptr) {
-			path.push_back(n->pos);
+			path.push_back(tiles.get(n->pos));
 			n = n->parent;
 		}
 

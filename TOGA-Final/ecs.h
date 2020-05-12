@@ -58,6 +58,11 @@ public:
 		return componentManager->getComponentId<Component>();
 	}
 
+	template<typename Component>
+	static bool hasComponent(Entity entity) {
+		return componentManager->hasComponent<Component>(entity);
+	}
+
 	template<typename System>
 	static std::shared_ptr<System> registerSystem() {
 		return systemManager->registerSystem<System>();

@@ -2,6 +2,8 @@
 
 #include "ecs.h"
 
+extern Level* level;
+
 class MonsterHandlerSystem : public System {
 public:
 
@@ -12,18 +14,11 @@ public:
 	}
 
 	void init() override {
-
 	}
 
 	void update(float dt) override {
-
 	}
 
 	void dealloc() {
-
-	}
-	
-	void takeTurn() {
-
 	}
 };

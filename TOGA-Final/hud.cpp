@@ -33,29 +33,26 @@ HUD::HUD() {
 }
 
 void HUD::update(float deltaTime) {
-	if (showDebug) {
-		// Update FPS check
-		fpsCheckTime += deltaTime;
-		framesCounted++;
-		float fpsCheckInterval = 1.0f / 20.0f;
-		if (fpsCheckTime > fpsCheckInterval) {
-			int fps = (int) (framesCounted / (fpsCheckTime));
-			std::string fpsString = "fps: " + std::to_string(fps);
-			ECS::getComponent<UITextComponent>(timeText).text = fpsString;
-			ECS::getComponent<UITextComponent>(timeText).textChanged = true;
-			fpsCheckTime = 0;
-			framesCounted = 0;
-		}
-
-		// Update entity info text
-		std::string entityInfoString = "entities: " + std::to_string(ECS::entityManager->getSize());
-		ECS::getComponent<UITextComponent>(infoText).text = entityInfoString;
-		ECS::getComponent<UITextComponent>(infoText).textChanged = true;
-
-		std::string levelString = "dungeon level: " + std::to_string(level->depth + 1);
-		ECS::getComponent<UITextComponent>(levelText).text = levelString;
-		ECS::getComponent<UITextComponent>(levelText).textChanged = true;
+	fpsCheckTime += deltaTime;
+	framesCounted++;
+	float fpsCheckInterval = 1.0f / 20.0f;
+	if (fpsCheckTime > fpsCheckInterval) {
+		int fps = (int) (framesCounted / (fpsCheckTime));
+		std::string fpsString = "fps: " + std::to_string(fps);
+		ECS::getComponent<UITextComponent>(timeText).text = fpsString;
+		ECS::getComponent<UITextComponent>(timeText).textChanged = true;
+		fpsCheckTime = 0;
+		framesCounted = 0;
 	}
+
+	// Update entity info text
+	std::string entityInfoString = "entities: " + std::to_string(ECS::entityManager->getSize());
+	ECS::getComponent<UITextComponent>(infoText).text = entityInfoString;
+	ECS::getComponent<UITextComponent>(infoText).textChanged = true;
+
+	std::string levelString = "dungeon level: " + std::to_string(level->depth + 1);
+	ECS::getComponent<UITextComponent>(levelText).text = levelString;
+	ECS::getComponent<UITextComponent>(levelText).textChanged = true;
 
 	if (notificationTimer > 0) {
 		notificationTimer -= deltaTime;
@@ -75,10 +72,24 @@ void HUD::update(float deltaTime) {
 	}
 }
 
-void HUD::updateDebugInfo(bool showDebug) {
-	//showDebugInfo = !showDebugInfo;
-	ECS::entityManager->setActive(timeText, showDebug);
-	ECS::entityManager->setActive(infoText, showDebug);
+void HUD::setActive(bool active) {
+	ECS::entityManager->setActive(levelText, active);
+	ECS::entityManager->setActive(goldText, active);
+	ECS::entityManager->setActive(healthText, active);
+	ECS::entityManager->setActive(inventoryText, active);
+	ECS::entityManager->setActive(tooltipText, active);
+	ECS::entityManager->setActive(notificationLines[0], active);
+	ECS::entityManager->setActive(notificationLines[1], active);
+	ECS::entityManager->setActive(notificationLines[2], active);
+	ECS::entityManager->setActive(inventoryHeader, active && showInventory);
+	ECS::entityManager->setActive(inventoryDivider1, active && showInventory);
+	ECS::entityManager->setActive(inventoryDivider2, active && showInventory);
+	if (!active) {
+		ECS::entityManager->setActive(inventoryMarker, false);
+		for (int i = 0; i < 8; i++) {
+			inventoryLines[i].setActive(false);
+		}
+	}
 }
 
 void HUD::updatePlayerStats(CharacterComponent character) {
@@ -101,6 +112,10 @@ void HUD::addNotification(std::string text) {
 	if (notifications.size() > 3) {
 		notifications.pop_back();
 	}
+}
+
+void HUD::clearNotifications() {
+	notifications.clear();
 }
 
 void HUD::updateInventory() {

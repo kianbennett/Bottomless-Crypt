@@ -5,6 +5,7 @@
 struct MonsterComponent {
 
 	int strength;
+	int turnsFollowed;
 
-	MonsterComponent(int strength) : strength(strength) {}
+	MonsterComponent(int strength) : strength(strength), turnsFollowed(0) {}
 };

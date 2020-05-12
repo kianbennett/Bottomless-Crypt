@@ -2,19 +2,10 @@
 #include "level_object_table.h" // Putting this include in level.h causes problems, no idea why
 #include "monster_table.h"
 
-Level::Level() {
-	//levelWidth = 26;
-	//levelHeight = 26;
-
-	generate();
-	build();
-	spawnObjects();
-}
-
 void Level::generate() {
 	// Dungeons size increases as depth increases, but is capped at a max value
-	levelWidth = std::min(16 + depth * 2, 50);
-	levelHeight = std::min(16 + depth * 2, 50);
+	levelWidth = std::min(16 + depth * 2, 100);
+	levelHeight = std::min(16 + depth * 2, 100);
 
 	tiles = Matrix<Tile>(levelWidth, levelHeight);
 
@@ -53,29 +44,16 @@ void Level::generate() {
 		return Vec2Int::distance(startPoint, a->centrePoint()) < Vec2Int::distance(startPoint, b->centrePoint());
 	});
 	
-	Matrix<GridNode> grid = Matrix<GridNode>(levelWidth, levelHeight);
-	for (int i = 0; i < levelWidth; i++) {
-		for (int j = 0; j < levelHeight; j++) {
-			float cost = 0;
-			if (tiles.get(i, j).type == TileType::Empty) {
-				cost = 10;
-			}
-			grid.set(i, j, GridNode(Vec2Int(i, j), cost));
-		}
-	}
-
 	// Use A* pathfinding to find shortest route between rooms to connnect with corridors
 	for (BSPNode* room : orderedRooms) {
 		Vec2Int destination = room->centrePoint();
 
-		std::vector<Vec2Int> path = Pathfinder::findPathOnGrid(grid, startPoint, destination);
+		std::vector<Tile> path = Pathfinder::findPathOnTileGrid(tiles, tiles.get(startPoint), tiles.get(destination));
 
 		for (int i = 0; i < path.size(); i++) {
-			Vec2Int point = path[i];
-			TileType existingType = tiles.get(point.x, point.y).type;
-			if (existingType == TileType::Empty) {
-				tiles.set(point.x, point.y, Tile(TileType::Corridor, point));
-				grid.get(point.x, point.y).cost = 0;
+			Tile tile = path[i];
+			if (tile.type == TileType::Empty) {
+				tiles.set(tile.pos, Tile(TileType::Corridor, tile.pos));
 			}
 		}
 	}
@@ -127,6 +105,8 @@ void Level::spawnObjects() {
 
 	for (std::pair<BSPNode*, SDL_Rect> room : bsp.rooms) {
 		SDL_Rect rect = room.second;
+
+		// Rooms over a certain size have more objects spawned in them
 		int area = rect.w * rect.h;
 		bool bigRoom = area > 50;
 
@@ -143,6 +123,7 @@ void Level::spawnObjects() {
 			}
 		}
 
+		// Spawn spikes
 		int spikes = bigRoom ? (5 + rand() % 5) : (2 + rand() % 4);
 		for (int i = 0; i < chests; i++) {
 			int x = rand() % rect.w;
@@ -155,7 +136,7 @@ void Level::spawnObjects() {
 			}
 		}
 
-		// Spawn monsters in every room but at the end
+		// Spawn monsters in every room but the first
 		if (room.first != startNode) {
 			int monsters = rand() % (bigRoom ? 5 : 3);
 
@@ -176,10 +157,21 @@ void Level::spawnObjects() {
 }
 
 void Level::createLevel(int depth) {
+	CharacterComponent playerCharacter;
+	bool keepPlayer = false;
+	if (ECS::entityManager->isAlive(player)) {
+		keepPlayer = true;
+		playerCharacter = ECS::getComponent<CharacterComponent>(player);
+	}
+
 	this->depth = depth;
 	generate();
 	build();
 	spawnObjects();
+
+	if (keepPlayer) {
+		ECS::getComponent<CharacterComponent>(player) = playerCharacter;
+	}
 }
 
 SDL_Rect Level::getNextPointInArea(std::vector<SDL_Rect> existing, int w, int h) {

@@ -13,7 +13,6 @@ extern const int SCREEN_HEIGHT;
 
 extern Level* level;
 extern TTF_Font* font;
-extern bool showDebug;
 extern bool showInventory;
 
 struct InventoryLine {
@@ -42,10 +41,11 @@ public:
 
 	HUD();
 	void update(float deltaTime);
-	void updateDebugInfo(bool showDebug);
+	void setActive(bool active);
 	void updatePlayerStats(CharacterComponent character);
 	void setTooltip(std::string text);
 	void addNotification(std::string text);
+	void clearNotifications();
 	void updateInventory();
 	void nextInventoryItem();
 	void prevInventoryItem();

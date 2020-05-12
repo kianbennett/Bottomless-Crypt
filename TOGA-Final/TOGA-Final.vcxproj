@@ -162,6 +162,7 @@
     <ClInclude Include="c_tile.h" />
     <ClInclude Include="c_ui_text.h" />
     <ClInclude Include="ecs.h" />
+    <ClInclude Include="end_screen.h" />
     <ClInclude Include="hud.h" />
     <ClInclude Include="item_table.h" />
     <ClInclude Include="level.h" />
@@ -169,6 +170,7 @@
     <ClInclude Include="matrix.h" />
     <ClInclude Include="monster_table.h" />
     <ClInclude Include="pathfinder.h" />
+    <ClInclude Include="start_screen.h" />
     <ClInclude Include="system.h" />
     <ClInclude Include="c_transform.h" />
     <ClInclude Include="entity.h" />

@@ -6,18 +6,22 @@
 
 #include "ecs.h"
 #include "camera.h"
-#include "s_render.h"
-#include "s_render_text.h"
-#include "s_move_objects.h"
 #include "hud.h"
+#include "start_screen.h"
+#include "end_screen.h"
 #include "level_object_table.h"
 #include "level.h"
 #include "pathfinder.h"
 #include "turn_handler.h"
+#include "s_render.h"
+#include "s_render_text.h"
+#include "s_move_objects.h"
+#include "s_monster_handler.h"
 
 const int SCREEN_WIDTH = 1200;
 const int SCREEN_HEIGHT = 800;
 
+void changeState(GameState state);
 void initSDL();
 void loadResources();
 
@@ -29,19 +33,22 @@ std::unique_ptr<SystemManager> ECS::systemManager = std::make_unique<SystemManag
 std::shared_ptr<RenderSystem> renderSystem;
 std::shared_ptr<RenderTextSystem> renderTextSystem;
 std::shared_ptr<MoveObjectSystem> moveObjectSystem;
+std::shared_ptr<MonsterHandlerSystem> monsterHandlerSystem;
 
 SDL_Window* window;
 SDL_Renderer* renderer;
 SDL_Texture* spritesheet;
-TTF_Font* font;
+TTF_Font* font, *titleFont;
 HUD* hud;
 Level* level;
+StartScreen startScreen;
+EndScreen endScreen;
 Camera camera;
 
-bool showDebug;
 bool showInventory;
 float deltaTime;
 Uint32 lastTime;
+GameState gameState;
 
 int main(int argc, char* args[]) {
 	initSDL();
@@ -59,21 +66,23 @@ int main(int argc, char* args[]) {
 	renderSystem = ECS::registerSystem<RenderSystem>();
 	renderTextSystem = ECS::registerSystem<RenderTextSystem>();
 	moveObjectSystem = ECS::registerSystem<MoveObjectSystem>();
+	monsterHandlerSystem = ECS::registerSystem<MonsterHandlerSystem>();
 
 	hud = new HUD();
 	level = new Level();
+	startScreen.init();
+	endScreen.init();
 
 	renderSystem->init();
 	renderTextSystem->init();
 	moveObjectSystem->init();
+	monsterHandlerSystem->init();
 
-	hud->updatePlayerStats(ECS::getComponent<CharacterComponent>(level->player));
-	hud->updateInventory();
-
-	showDebug = true;
 	showInventory = false;
 	bool quit = false;
 	SDL_Event e;
+
+	changeState(GameState::Start);
 
 	while (!quit) {
 		// Get deltaTime but measuring difference in time elapsed since last frame
@@ -87,27 +96,37 @@ int main(int argc, char* args[]) {
 				quit = true;
 			}
 			if (e.type == SDL_KEYDOWN && !e.key.repeat) {
-				switch (e.key.keysym.sym) {
+				switch (gameState) {
+				case GameState::Start:
+				case GameState::GameOver:
+					switch (e.key.keysym.sym) {
 					case SDLK_ESCAPE:
 						quit = true;
 						break;
-					case SDLK_F3:
-						showDebug = !showDebug;
-						hud->updateDebugInfo(showDebug);
+					case SDLK_SPACE:
+						changeState(GameState::InGame);
+						break;
+					}
+					break;
+				case GameState::InGame:
+					switch (e.key.keysym.sym) {
+					case SDLK_ESCAPE:
+						changeState(GameState::Start);
+						//TurnHandler::damageCharacter(level->player, 10000);
 						break;
 					case SDLK_r:
 						level->createLevel(level->depth);
 						break;
 					case SDLK_w:
 						if (showInventory) hud->prevInventoryItem();
-							else TurnHandler::takeTurn(Direction::Up);
+						else TurnHandler::takeTurn(Direction::Up);
 						break;
 					case SDLK_s:
 						if (showInventory) hud->nextInventoryItem();
-							else TurnHandler::takeTurn(Direction::Down);
+						else TurnHandler::takeTurn(Direction::Down);
 						break;
 					case SDLK_a:
-						if(!showInventory) TurnHandler::takeTurn(Direction::Left);
+						if (!showInventory) TurnHandler::takeTurn(Direction::Left);
 						break;
 					case SDLK_d:
 						if (!showInventory) TurnHandler::takeTurn(Direction::Right);
@@ -125,6 +144,8 @@ int main(int argc, char* args[]) {
 					case SDLK_x:
 						if (showInventory) TurnHandler::dropItem();
 						break;
+					}
+					break;
 				}
 			}
 		}
@@ -141,17 +162,14 @@ int main(int argc, char* args[]) {
 		level->update(deltaTime);
 
 		// Clear screen to background colour
-		SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0x00, 0xFF);
+		SDL_SetRenderDrawColor(renderer, 10, 10, 13, 0xFF);
 		SDL_RenderClear(renderer);
 
-		// Render code
+		// Update systems
 		renderSystem->update(deltaTime);
 		renderTextSystem->update(deltaTime);
 		moveObjectSystem->update(deltaTime);
-
-		if (showDebug) {
-			//testLevel->drawDebug();
-		}
+		monsterHandlerSystem->update(deltaTime);
 
 		// Update screen (switches buffers)
 		SDL_RenderPresent(renderer);
@@ -160,8 +178,10 @@ int main(int argc, char* args[]) {
 	renderSystem->dealloc();
 	renderTextSystem->dealloc();
 	moveObjectSystem->dealloc();
+	monsterHandlerSystem->dealloc();
 
 	TTF_CloseFont(font);
+	TTF_CloseFont(titleFont);
 	TTF_Quit();
 
 	SDL_DestroyWindow(window);
@@ -171,6 +191,24 @@ int main(int argc, char* args[]) {
 	IMG_Quit();
 
 	return 0;
+}
+
+void changeState(GameState state) {
+	gameState = state;
+
+	startScreen.setActive(state == GameState::Start);
+	endScreen.setActive(state == GameState::GameOver);
+	hud->setActive(state == GameState::InGame);
+	hud->clearNotifications();
+
+	if (state == GameState::InGame) {
+		level->createLevel(0);
+		hud->updatePlayerStats(ECS::getComponent<CharacterComponent>(level->player));
+		hud->updateInventory();
+	}
+	else {
+		level->dealloc();
+	}
 }
 
 void initSDL() {
@@ -211,7 +249,9 @@ void initSDL() {
 void loadResources() {
 	// Load the font
 	const char* fontPath = "res/fonts/consolas.ttf";
+
 	font = TTF_OpenFont(fontPath, 20);
+	titleFont = TTF_OpenFont(fontPath, 72);
 
 	if (font == NULL) {
 		printf("Failed to load font from %s - Error: %s\n", fontPath, SDL_GetError());
