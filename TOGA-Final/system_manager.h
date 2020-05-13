@@ -12,7 +12,7 @@ class SystemManager {
 public:
 	// Registers a system in the map
 	template<typename System>
-	std::shared_ptr<System> registerSystem() {
+	System* registerSystem() {
 		const char* typeName = typeid(System).name();
 
 		if (hasSystemBeenRegistered(typeName)) {
@@ -20,7 +20,7 @@ public:
 			return NULL;
 		}
 
-		std::shared_ptr<System> system = std::make_shared<System>();
+		System* system = new System();
 		systems[typeName] = system;
 		return system;
 	}
@@ -28,7 +28,7 @@ public:
 	// Called when an entity is destroyed, goes through each system and removes that entity
 	void onEntityDestroyed(Entity entity) {
 		for (auto pair : systems) {
-			std::shared_ptr<System> system = pair.second;
+			System* system = pair.second;
 			// Entities is a set (unique values) so no exists check is needed
 			int size = system->entities.size();
 			system->entities.erase(entity);
@@ -43,7 +43,7 @@ public:
 		// Go through each system and check the signature matches the new signature
 		for (auto pair : systems) {
 			const char* typeName = pair.first;
-			std::shared_ptr<System> system = pair.second;
+			System* system = pair.second;
 
 			int size = system->entities.size();
 
@@ -66,7 +66,7 @@ public:
 
 private:
 	// Store systems in a map with the key as the string representation of the type name
-	std::unordered_map<const char*, std::shared_ptr<System>> systems;
+	std::unordered_map<const char*, System*> systems;
 
 	bool hasSystemBeenRegistered(const char* typeName) {
 		return systems.find(typeName) != systems.end();

@@ -5,6 +5,8 @@ VisualStudioVersion = 16.0.29519.181
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TOGA-Final", "TOGA-Final\TOGA-Final.vcxproj", "{DB2E7BF7-2FE9-421A-A4E5-7BCEDBB711AE}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Unit Testing", "Unit Testing\Unit Testing.vcxproj", "{176CD3F8-1806-4A9C-AA4D-615972F2CF7A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -21,6 +23,14 @@ Global
 		{DB2E7BF7-2FE9-421A-A4E5-7BCEDBB711AE}.Release|x64.Build.0 = Release|x64
 		{DB2E7BF7-2FE9-421A-A4E5-7BCEDBB711AE}.Release|x86.ActiveCfg = Release|Win32
 		{DB2E7BF7-2FE9-421A-A4E5-7BCEDBB711AE}.Release|x86.Build.0 = Release|Win32
+		{176CD3F8-1806-4A9C-AA4D-615972F2CF7A}.Debug|x64.ActiveCfg = Debug|x64
+		{176CD3F8-1806-4A9C-AA4D-615972F2CF7A}.Debug|x64.Build.0 = Debug|x64
+		{176CD3F8-1806-4A9C-AA4D-615972F2CF7A}.Debug|x86.ActiveCfg = Debug|Win32
+		{176CD3F8-1806-4A9C-AA4D-615972F2CF7A}.Debug|x86.Build.0 = Debug|Win32
+		{176CD3F8-1806-4A9C-AA4D-615972F2CF7A}.Release|x64.ActiveCfg = Release|x64
+		{176CD3F8-1806-4A9C-AA4D-615972F2CF7A}.Release|x64.Build.0 = Release|x64
+		{176CD3F8-1806-4A9C-AA4D-615972F2CF7A}.Release|x86.ActiveCfg = Release|Win32
+		{176CD3F8-1806-4A9C-AA4D-615972F2CF7A}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

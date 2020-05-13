@@ -2,6 +2,7 @@
 
 #include "vec2.h"
 #include <SDL.h>
+#include <unordered_map>
 
 struct BSPNode {
 	BSPNode* parent;

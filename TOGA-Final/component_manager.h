@@ -25,7 +25,7 @@ public:
 
 		// Update maps
 		componentIds[typeName] = nextComponentId;
-		componentArrays[typeName] = std::make_shared<ComponentArray<Component>>();
+		componentArrays[typeName] = new ComponentArray<Component>();
 
 		// Increment component id
 		nextComponentId++;
@@ -33,7 +33,7 @@ public:
 
 	// Retrieves component id from map
 	template<typename Component>
-	uint8_t getComponentId() {
+	int getComponentId() {
 		const char* typeName = typeid(Component).name();
 		if (componentIds.find(typeName) == componentIds.end()) {
 			printf("Component must be registered before use\n");
@@ -63,7 +63,7 @@ public:
 	// Looks through each ComponentArray and removes components associated with that entity
 	void onEntityDestroyed(Entity entity) {
 		for (auto pair : componentArrays) {
-			std::shared_ptr<IComponentArray> component = pair.second;
+			IComponentArray* component = pair.second;
 			component->onEntityDestroyed(entity);
 		}
 	}
@@ -75,20 +75,20 @@ public:
 
 private:
 	// Gives each component a unique id (mapped to the string of component type name)
-	std::unordered_map<const char*, uint8_t> componentIds;
+	std::unordered_map<const char*, int> componentIds;
 	// Map component arrays to the type name
-	std::unordered_map<const char*, std::shared_ptr<IComponentArray>> componentArrays;
+	std::unordered_map<const char*, IComponentArray*> componentArrays;
 	// Incremented every time a component is registered
-	uint8_t nextComponentId;
+	int nextComponentId;
 
 	template<typename Component>
-	std::shared_ptr<ComponentArray<Component>> getComponentArray() {
+	ComponentArray<Component>* getComponentArray() {
 		const char* typeName = typeid(Component).name();
 		if (componentIds.find(typeName) == componentIds.end()) {
 			printf("Component must be registered before use\n");
 			return NULL;
 		}
 		// Cast IComponentArray to ComponentArray<Component>
-		return std::static_pointer_cast<ComponentArray<Component>>(componentArrays[typeName]);
+		return (ComponentArray<Component>*) componentArrays[typeName];
 	}
 };

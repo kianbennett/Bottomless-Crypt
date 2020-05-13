@@ -25,15 +25,15 @@ void changeState(GameState state);
 void initSDL();
 void loadResources();
 
-// Definition of static variables in ECS
-std::unique_ptr<EntityManager> ECS::entityManager = std::make_unique<EntityManager>();
-std::unique_ptr<ComponentManager> ECS::componentManager = std::make_unique<ComponentManager>();
-std::unique_ptr<SystemManager> ECS::systemManager = std::make_unique<SystemManager>();
+// Definition of static variables in ECS since they can't be defined in the ECS class at compile time
+EntityManager* ECS::entityManager = new EntityManager();
+ComponentManager* ECS::componentManager = new ComponentManager();
+SystemManager* ECS::systemManager = new SystemManager();
 
-std::shared_ptr<RenderSystem> renderSystem;
-std::shared_ptr<RenderTextSystem> renderTextSystem;
-std::shared_ptr<MoveObjectSystem> moveObjectSystem;
-std::shared_ptr<MonsterHandlerSystem> monsterHandlerSystem;
+RenderSystem* renderSystem;
+RenderTextSystem* renderTextSystem;
+MoveObjectSystem* moveObjectSystem;
+MonsterHandlerSystem* monsterHandlerSystem;
 
 SDL_Window* window;
 SDL_Renderer* renderer;
@@ -162,7 +162,7 @@ int main(int argc, char* args[]) {
 		level->update(deltaTime);
 
 		// Clear screen to background colour
-		SDL_SetRenderDrawColor(renderer, 10, 10, 13, 0xFF);
+		SDL_SetRenderDrawColor(renderer, 24, 23, 41, 0xFF);
 		SDL_RenderClear(renderer);
 
 		// Update systems

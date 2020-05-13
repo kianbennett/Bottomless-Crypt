@@ -9,9 +9,9 @@
 // Static class that acts as a central location to access ECS related functions
 class ECS {
 public:
-	static std::unique_ptr<EntityManager> entityManager;
-	static std::unique_ptr<ComponentManager> componentManager;
-	static std::unique_ptr<SystemManager> systemManager;
+	static EntityManager* entityManager;
+	static ComponentManager* componentManager;
+	static SystemManager* systemManager;
 
 	static Entity createEntity() {
 		return entityManager->create();
@@ -54,7 +54,7 @@ public:
 	}
 
 	template<typename Component>
-	static uint8_t getComponentId() {
+	static int getComponentId() {
 		return componentManager->getComponentId<Component>();
 	}
 
@@ -64,7 +64,7 @@ public:
 	}
 
 	template<typename System>
-	static std::shared_ptr<System> registerSystem() {
+	static System* registerSystem() {
 		return systemManager->registerSystem<System>();
 	}
 };

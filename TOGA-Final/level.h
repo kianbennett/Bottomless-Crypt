@@ -8,7 +8,7 @@
 #include "components.h"
 #include <map>
 
-extern std::shared_ptr<RenderSystem> renderSystem;
+extern RenderSystem* renderSystem;
 extern SDL_Renderer* renderer;
 extern SDL_Texture* spritesheet;
 

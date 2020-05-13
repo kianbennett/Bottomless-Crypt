@@ -6,7 +6,7 @@
 
 extern Level* level;
 extern HUD* hud;
-extern std::shared_ptr<MonsterHandlerSystem> monsterHandlerSystem;
+extern MonsterHandlerSystem* monsterHandlerSystem;
 extern void changeState(GameState state);
 
 enum class Direction {

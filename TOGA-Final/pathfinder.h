@@ -4,6 +4,7 @@
 #include <algorithm> 
 #include "vec2.h"
 #include "matrix.h"
+#include "c_tile.h"
 
 //struct GridNode {
 //	Vec2Int pos;
