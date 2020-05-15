@@ -10,15 +10,15 @@ public:
 			ItemComponent("wooden club", ItemType::Weapon, 2, 4),
 			ItemComponent("wooden sword", ItemType::Weapon, 3, 12),
 			ItemComponent("iron sword", ItemType::Weapon, 6, 30),
-			ItemComponent("iron mace", ItemType::Weapon, 18, 800),
-			ItemComponent("iron axe", ItemType::Weapon, 18, 800),
-			ItemComponent("bronze sword", ItemType::Weapon, 8, 60),
+			ItemComponent("iron mace", ItemType::Weapon, 6, 30),
+			ItemComponent("iron axe", ItemType::Weapon, 7, 35),
+			ItemComponent("bronze sword", ItemType::Weapon, 9, 60),
 			ItemComponent("steel sword", ItemType::Weapon, 11, 100), // 7
-			ItemComponent("steel mace", ItemType::Weapon, 18, 800),
-			ItemComponent("steel axe", ItemType::Weapon, 18, 800),
-			ItemComponent("sharp steel sword", ItemType::Weapon, 12, 120),
-			ItemComponent("adamantium axe", ItemType::Weapon, 18, 800),
-			ItemComponent("sdamantium sword", ItemType::Weapon, 18, 800),
+			ItemComponent("steel mace", ItemType::Weapon, 11, 100),
+			ItemComponent("steel axe", ItemType::Weapon, 12, 112),
+			ItemComponent("sharp steel sword", ItemType::Weapon, 13, 160),
+			ItemComponent("adamantium sword", ItemType::Weapon, 18, 350),
+			ItemComponent("adamantium axe", ItemType::Weapon, 20, 700),
 
 			ItemComponent("small health potion", ItemType::Potion, 10, 40), // 13
 			ItemComponent("medium health potion", ItemType::Potion, 20, 80),
@@ -54,6 +54,26 @@ public:
 		itemIds.insert(itemIds.end(), 1, 20);
 		itemIds.insert(itemIds.end(), 1, 21);
 		itemIds.insert(itemIds.end(), 1, 22);
+
+		if (level->depth > 2) {
+			itemIds.insert(itemIds.end(), 4, 6);
+			itemIds.insert(itemIds.end(), 4, 7);
+			itemIds.insert(itemIds.end(), 4, 8);
+			itemIds.insert(itemIds.end(), 4, 9);
+			itemIds.insert(itemIds.end(), 8, 14);
+			itemIds.insert(itemIds.end(), 3, 23);
+		}
+
+		if (level->depth > 5) {
+			itemIds.insert(itemIds.end(), 4, 10);
+			itemIds.insert(itemIds.end(), 4, 11);
+			itemIds.insert(itemIds.end(), 4, 12);
+			itemIds.insert(itemIds.end(), 8, 15);
+			itemIds.insert(itemIds.end(), 2, 24);
+			itemIds.insert(itemIds.end(), 2, 25);
+			itemIds.insert(itemIds.end(), 2, 26);
+			itemIds.insert(itemIds.end(), 2, 27);
+		}
 
 		int n = itemIds[rand() % itemIds.size()];
 

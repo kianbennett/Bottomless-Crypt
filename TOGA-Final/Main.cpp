@@ -9,6 +9,7 @@
 #include "hud.h"
 #include "start_screen.h"
 #include "end_screen.h"
+#include "victory_screen.h"
 #include "level_object_table.h"
 #include "level.h"
 #include "pathfinder.h"
@@ -43,6 +44,7 @@ HUD* hud;
 Level* level;
 StartScreen startScreen;
 EndScreen endScreen;
+VictoryScreen victoryScreen;
 Camera camera;
 
 bool showInventory;
@@ -72,6 +74,7 @@ int main(int argc, char* args[]) {
 	level = new Level();
 	startScreen.init();
 	endScreen.init();
+	victoryScreen.init();
 
 	renderSystem->init();
 	renderTextSystem->init();
@@ -98,6 +101,7 @@ int main(int argc, char* args[]) {
 			if (e.type == SDL_KEYDOWN && !e.key.repeat) {
 				switch (gameState) {
 				case GameState::Start:
+				case GameState::Victory:
 				case GameState::GameOver:
 					switch (e.key.keysym.sym) {
 					case SDLK_ESCAPE:
@@ -198,6 +202,7 @@ void changeState(GameState state) {
 
 	startScreen.setActive(state == GameState::Start);
 	endScreen.setActive(state == GameState::GameOver);
+	victoryScreen.setActive(state == GameState::Victory);
 	hud->setActive(state == GameState::InGame);
 	hud->clearNotifications();
 

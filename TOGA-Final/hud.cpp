@@ -135,7 +135,7 @@ void HUD::updateInventory() {
 
 		if (i < character.inventory.size()) {
 			ItemComponent item = ECS::getComponent<ItemComponent>(character.inventory[i]);
-			inventoryLines[i].setValues(item, character.equippedWeapon != nullptr && character.inventory[i] == *character.equippedWeapon);
+			inventoryLines[i].setValues(item, character.hasEquippedWeapon && character.inventory[i] == character.equippedWeapon);
 		}
 	}
 

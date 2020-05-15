@@ -197,6 +197,7 @@
     <ClInclude Include="turn_handler.h" />
     <ClInclude Include="types.h" />
     <ClInclude Include="vec2.h" />
+    <ClInclude Include="victory_screen.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

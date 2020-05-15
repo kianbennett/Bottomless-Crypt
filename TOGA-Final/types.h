@@ -7,5 +7,5 @@ const uint8_t MAX_COMPONENTS = 64;
 using Signature = std::bitset<MAX_COMPONENTS>;
 
 enum class GameState {
-	Start, InGame, GameOver
+	Start, InGame, GameOver, Victory
 };

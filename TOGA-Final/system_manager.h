@@ -6,8 +6,6 @@
 #include "system.h"
 #include "types.h"
 
-class ECS;
-
 class SystemManager {
 public:
 	// Registers a system in the map

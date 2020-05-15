@@ -8,6 +8,8 @@ extern Level* level;
 extern HUD* hud;
 extern MonsterHandlerSystem* monsterHandlerSystem;
 extern void changeState(GameState state);
+extern EndScreen endScreen;
+extern VictoryScreen victoryScreen;
 
 enum class Direction {
 	Up, Down, Left, Right
@@ -61,15 +63,21 @@ public:
 		Tile tileCurrent = ECS::getComponent<LevelObjectComponent>(level->player).tile;
 
 		if (tileCurrent.pos == level->endTile.pos) {
-			level->createLevel(++level->depth);
-			hud->setTooltip("");
+			if (level->depth == 9) {
+				victoryScreen.setScore(getFinalScore());
+				changeState(GameState::Victory);
+			}
+			else {
+				level->createLevel(++level->depth);
+				hud->setTooltip("");
+			}
 		}
 	}
 
 	static void dropItem() {
 		CharacterComponent& playerCharacter = ECS::getComponent<CharacterComponent>(level->player);
-		if (playerCharacter.equippedWeapon != nullptr && playerCharacter.inventory[hud->inventoryIndex] == *playerCharacter.equippedWeapon) {
-			playerCharacter.equippedWeapon = nullptr;
+		if (playerCharacter.hasEquippedWeapon && playerCharacter.inventory[hud->inventoryIndex] == playerCharacter.equippedWeapon) {
+			playerCharacter.hasEquippedWeapon = false;
 		}
 		playerCharacter.inventory.erase(playerCharacter.inventory.begin() + hud->inventoryIndex);
 
@@ -82,11 +90,12 @@ public:
 
 		switch (item.type) {
 		case ItemType::Weapon:
-			if (playerCharacter.equippedWeapon == &playerCharacter.inventory[hud->inventoryIndex]) {
-				playerCharacter.equippedWeapon = nullptr;
+			if (playerCharacter.equippedWeapon == playerCharacter.inventory[hud->inventoryIndex]) {
+				playerCharacter.hasEquippedWeapon = false;
 			}
 			else {
-				playerCharacter.equippedWeapon = &playerCharacter.inventory[hud->inventoryIndex];
+				playerCharacter.equippedWeapon = playerCharacter.inventory[hud->inventoryIndex];
+				playerCharacter.hasEquippedWeapon = true;
 			}
 			hud->updateInventory();
 			break;
@@ -223,8 +232,8 @@ public:
 
 		int damage = 1;
 		if (attacker == level->player) {
-			if (charAttacker.equippedWeapon != nullptr) {
-				damage += ECS::getComponent<ItemComponent>(*charAttacker.equippedWeapon).strength;
+			if (charAttacker.hasEquippedWeapon) {
+				damage += ECS::getComponent<ItemComponent>(charAttacker.equippedWeapon).strength;
 			}
 		}
 		else {
@@ -264,6 +273,7 @@ public:
 		if (character.healthCurrent <= 0) {
 			if (entity == level->player) {
 				//level->createLevel(0);
+				endScreen.setScore(getFinalScore());
 				changeState(GameState::GameOver);
 			}
 			else {
@@ -272,6 +282,15 @@ public:
 			return true;
 		}
 		return false;
+	}
+
+	static int getFinalScore() {
+		CharacterComponent playerCharacter = ECS::getComponent<CharacterComponent>(level->player);
+		int score = playerCharacter.gold;
+		for (int i = 0; i < playerCharacter.inventory.size(); i++) {
+			score += ECS::getComponent<ItemComponent>(playerCharacter.inventory[i]).value;
+		}
+		return score;
 	}
 
 	static std::string nounArticle(std::string name, bool capitalise = false) {
