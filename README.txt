@@ -1,4 +1,8 @@
- ______   _______ __________________ _______  _______  _        _______  _______  _______ 
+This is a project made for a first year university C++ module - a roguelike with randomly generated dungeons using binary space partitioning. 
+Corridors are made using A* to find paths between rooms, and the entire program is written as an Entity-Component-System. 
+ 
+
+______   _______ __________________ _______  _______  _        _______  _______  _______ 
 (  ___ \ (  ___  )\__   __/\__   __/(  ___  )(       )( \      (  ____ \(  ____ \(  ____ \
 | (   ) )| (   ) |   ) (      ) (   | (   ) || () () || (      | (    \/| (    \/| (    \/
 | (__/ / | |   | |   | |      | |   | |   | || || || || |      | (__    | (_____ | (_____ 
@@ -16,10 +20,6 @@
                       | (____/\| ) \ \__   | |   | )         | |                            
                       (_______/|/   \__/   \_/   |/          )_(                            
                                                                            
-                     =============================================                    
-                     ---------------- BY UP940801 ----------------
-                     =============================================                    
-
 Instructions:
 
 	- To launch the game run Debug/TOGA-Final.exe
@@ -55,8 +55,5 @@ Monsters:
 
 
 Enjoy and thank you for playing!
-
-- UP940801
-
 
 
