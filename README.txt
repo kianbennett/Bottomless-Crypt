@@ -1,5 +1,4 @@
-This is a project made for a first year university C++ module - a roguelike with randomly generated dungeons using binary space partitioning. 
-Corridors are made using A* to find paths between rooms, and the entire program is written as an Entity-Component-System. 
+This is a project made for a first year university C++ module - a roguelike with randomly generated dungeons using binary space partitioning. Corridors are made using A* to find paths between rooms, and the entire program is written as an Entity-Component-System. 
  
 
 ______   _______ __________________ _______  _______  _        _______  _______  _______ 
